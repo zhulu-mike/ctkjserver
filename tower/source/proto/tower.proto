@@ -1,0 +1,34 @@
+import "common.proto";
+
+package tower;
+
+message TowerInfo
+{
+	optional int32 towerid = 1;	// 爬塔id
+	optional int32 point = 2;	// 分数
+	optional int32 layer = 3;	// 层数
+}
+
+message update
+{
+	repeated TowerInfo towerinfo = 1;
+}
+
+message update_resp
+{
+	optional int32 result = 1;	// 返回结果
+}
+
+// 获取爬塔信息
+message refresh
+{
+}
+
+// 获取爬塔信息返回
+message refresh_resp
+{
+	repeated TowerInfo towerinfo = 1;
+}
+
+
+

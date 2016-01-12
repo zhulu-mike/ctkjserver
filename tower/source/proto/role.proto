@@ -1,0 +1,45 @@
+import "common.proto";
+
+package role;
+
+message update
+{
+	optional int32 roleid = 1;		//玩家ID
+	optional int32 version = 2;
+	optional string rolename = 3;	//昵称
+	optional int32 coins = 4;		//游戏币
+	optional bool isFirst = 5;		//开场动画
+	optional int32 currentFace = 6;	//现在使用的头像编号
+	optional int32 point = 7;		//无尽模式分数
+	optional int32 yuanbao = 8;
+	repeated int32 storyData = 9;	//剧情对话 
+	repeated int32 teachData  = 10;	//引导
+	repeated int32 faceList = 11;	//头像
+
+}
+
+message update_resp
+{
+	optional int32 result = 1;	// 返回结果
+}
+
+// 玩家角色信息
+message refresh
+{
+}
+
+// 获取玩家角色信息
+message refresh_resp
+{
+	optional int32 roleid = 1;		//玩家ID
+	optional int32 version = 2;
+	optional string rolename = 3;	//昵称
+	optional int32 coins = 4;		//游戏币
+	optional bool isFirst = 5;		//开场动画
+	optional int32 currentFace = 6;	//现在使用的头像编号
+	optional int32 point = 7;		//无尽模式分数
+	optional int32 yuanbao = 8;
+	repeated int32 storyData = 9;	//剧情对话 
+	repeated int32 teachData  = 10;	//引导
+	repeated int32 faceList = 11;	//头像
+}

@@ -1,0 +1,2 @@
+0 0 * * * sh /home/majh/pkserver/redis/help/timer.sh
+

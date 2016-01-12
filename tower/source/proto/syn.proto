@@ -1,0 +1,127 @@
+/*
+* 同步数据消息
+*/
+import "common.proto";
+
+package syn;
+
+//提交玩家数据
+message data
+{
+	optional int32 version = 1;
+	optional UserInfo user = 2;		//帐号信息
+	repeated Prop props = 3;			//背包内物品
+	repeated GameRole roles = 4;		   //游戏内角色信息
+	repeated Achievement achievements = 5; //成就
+}
+
+//提交操作
+message common
+{
+	optional int32 id = 1;			//操作ID(提交时有序)
+	optional int32 time = 2;		//记录时间
+}
+
+//物品记录
+message itemget
+{
+	optional common header = 1;
+	optional int32 dataid = 2;	 //物品ID
+	optional int32 count = 3;	 //数量
+	optional int32 from = 4;	 //来源
+	optional int32 costtype = 5; //真实消耗类型
+	optional int32 cost = 6;	 //消耗值
+}
+
+//物品使用记录
+message itemuse
+{
+	optional common header = 1;
+	optional int32 dataid = 2;	 //物品ID
+	optional int32 count = 3;	 //数量
+}
+
+//体力记录
+message energy
+{
+	optional common header = 1;
+	optional int32 op = 2;		//获得还是消耗
+	optional int32 fromto = 3;	//来源或消耗对象
+	optional int32 point = 4;	//点数
+	optional int32 remain = 5;	//剩余点数
+}
+
+//游戏币记录
+message money
+{
+	optional common header = 1;
+	optional int32 op = 2;		//获得还是消耗
+	optional int32 fromto = 3;	//来源或消耗对象
+	optional int32 point = 4;	//点数
+	optional int32 remain = 5;	//剩余点数
+}
+
+//人民币记录
+message rmb
+{
+	optional common header = 1;
+	optional int32 op = 2;		//获得还是消耗
+	optional int32 fromto = 3;	//来源或消耗对象
+	optional int32 point = 4;	//点数
+	optional int32 remain = 5;	//剩余点数
+}
+
+//关卡记录
+message battle
+{
+	optional common header = 1;
+	optional int32 id = 2;			//关卡ID
+	optional int32 duration = 3;	//关卡耗时
+	optional int32 rslt = 4;		//关卡结果
+	optional int32 score = 5;		//分数
+	optional int32 distance = 6;	//距离
+}
+
+//角色记录
+message actor
+{
+	optional common header = 1;
+	optional int32 id = 2;			//角色
+	optional int32 level = 3;		//升级等级
+	optional int32 oldlevel = 4;	//升级前等级
+	optional int32 costtype = 5;	//真实消耗类型
+	optional int32 cost = 6;		//消耗值
+}
+
+//操作记录
+message record
+{
+	optional int32 version = 1;
+	optional int32 endflag = 2;		//是否是最后1条同步消息
+	repeated itemget opitem = 3;
+	repeated itemuse opitemuse = 4;
+	repeated energy openergy = 5;
+	repeated money opmoney = 6;
+	repeated rmb oprmb = 7;
+	repeated battle opbattle = 8;
+	repeated actor opactor = 9;
+}
+
+message resp
+{
+	optional int32 result = 1; //返回结果
+}
+
+message query
+{
+	optional int32 roleidx = 1;		//玩家,默认为1
+}
+
+message query_resp
+{
+	optional int32 version = 1;
+	optional UserInfo user = 2;		//帐号信息
+	repeated Prop props = 3;		//背包内物品
+	repeated GameRole actors = 4;		//游戏内角色信息
+	repeated Achievement achievements = 5; 	//成就
+}

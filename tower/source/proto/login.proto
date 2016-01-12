@@ -1,0 +1,24 @@
+/**
+* 请求登录验证  id:100
+*/
+
+package login;
+
+message auth
+{
+    optional string bindaccount 	= 1; //绑定账号
+    optional int32  serverid	= 2;	 //服务器编号
+    optional int32  platformid	= 3;	 //ID
+    optional string deviceid	= 4;	 //设备标识ID
+    optional int32  version	= 6;		 //客户端版本
+}
+
+message auth_resp
+{
+    optional int32 error = 1;	      //错误码
+    optional string userid = 2;             //角色id
+    optional int32 systime = 3;         //系统时间
+    optional int32 version = 4;         //当前版本
+}
+
+

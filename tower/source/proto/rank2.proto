@@ -1,0 +1,50 @@
+	/**
+	 * 排行消息
+	*/
+
+	import "common.proto";
+
+	package rank2;
+
+	message query
+	{
+		optional int32 type = 1; 	//类型 
+	}
+
+	message rankinfo
+	{
+		optional FriendInfo friend = 1; 		// 排行榜信息
+		optional bool isFriend = 2;		// 是否是好友
+		optional int32 score = 3;		// 排行分数
+	}
+
+	message query_resp
+	{	
+		optional int32 type = 1; 	//类型 
+		repeated rankinfo ranklist = 2;
+	}
+	
+	message get_award
+	{
+		optional int32 type = 1; 	//类型 
+	}
+	
+	message get_award_resp
+	{
+		optional int32 type 	= 1; 	//类型 
+		optional int32 result	= 2;	// 玩家ID
+		repeated int32 ranking	= 3;	// 名次
+	}
+	
+	message is_clear_point
+	{
+		optional int32 type = 1; 	//类型 
+	}
+	
+	message is_clear_point_resp
+	{
+		optional int32 type = 1; 	//类型 
+		optional int32 result	= 2;		// 玩家ID
+		optional bool isClear = 3;			//是否清空
+	}
+	

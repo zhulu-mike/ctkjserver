@@ -1,0 +1,28 @@
+root = "./"
+name = "gate1"
+thread = 8
+logger = nil
+logpath = "."
+harbor = 0
+start = "main"	-- main script
+bootstrap = "snlua bootstrap"	-- The service for bootstrap
+gamelua = "../core/?.lua;".."../external/lualib/?.lua;".."../../source/common/?.lua;".."../../source/gate/?.lua"
+luaservice = root.."service/?.lua;"..gamelua
+lualoader = "lualib/loader.lua"
+preload = "../../source/common/preload.lua"	-- run preload.lua before every lua service run
+snax = luaservice
+cpath = root.."cservice/?.so;"
+lua_path = root.."lualib/?.lua;"..gamelua
+lua_cpath = root.."luaclib/?.so;".."../external/luaclib/?.so"
+cluster = "../../cluster/clustername.lua"
+
+--gate identify
+gateid = 1
+
+--max client connections
+maxconnection = 1000
+
+--precreate agents
+agentcachecount = 2
+
+--daemon = "./skynet1_gate1.pid"

@@ -1,0 +1,20 @@
+	/**
+	 * 签到消息
+	*/
+
+	import "common.proto";
+
+	package sign;
+
+    message signin
+	{
+        optional int32 operate = 1; //操作，查询，签到
+    }
+
+	message signin_resp
+	{
+        optional int32 result 		= 1;			  // 返回结果
+        optional int32 status 		= 2;			  // 当天签到状态 1未签 2已签
+        optional int32 totaldays	= 3;			  // 签到天数
+		optional int32 signindex	= 4;			  // 签到奖品索引
+    }

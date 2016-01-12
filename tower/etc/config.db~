@@ -1,0 +1,34 @@
+root = "./"
+name = "database"
+thread = 8
+logger = nil
+logpath = ""
+harbor = 0
+start = "main"	-- main script
+bootstrap = "snlua bootstrap"	-- The service for bootstrap
+gamelua = "../core/?.lua;".."../external/lualib/?.lua;".."../../source/common/?.lua;".."../../source/db/?.lua"
+luaservice = root.."service/?.lua;"..gamelua
+lualoader = "lualib/loader.lua"
+preload = "../../source/common/preload.lua"	-- run preload.lua before every lua service run
+snax = luaservice
+cpath = root.."cservice/?.so;"
+lua_path = root.."lualib/?.lua;"..gamelua
+lua_cpath = root.."luaclib/?.so;".."../external/luaclib/?.so"
+cluster = "../../cluster/clustername.lua"
+
+--db connections
+mysql_maxconn = 10
+mysql_host 	  = "192.168.1.230"
+mysql_port 	  = 3307
+mysql_db 	  = "towerdb"
+mysql_user 	  = "ctkj"
+mysql_pwd 	  = "ctkj123"
+
+--redis connnections
+redis_maxinst = 1			  	-- redis最大实例数
+
+redis_host1 = "127.0.0.1"		-- redis数据库IP
+redis_port1 = 9106			 	-- redis数据库端口
+redis_auth1 = "ctkj0571"	 	-- redis数据库密码
+
+--daemon = "./skynet1_db.pid"

@@ -1,0 +1,45 @@
+	/**
+	 * 排行消息
+	*/
+
+	import "common.proto";
+
+	package rank;
+
+	message query
+	{
+		optional int32 type = 1; //类型 1 无尽模式
+		optional int32 prepare = 2; //参数 爬塔的层
+	}
+
+	message rankinfo
+	{
+		optional FriendInfo friend = 1; // 排行榜信息
+		optional bool isFriend = 2;		// 是否是好友
+	}
+
+	message query_resp
+	{	
+		repeated rankinfo ranklist = 1;
+	}
+	
+	message get_award
+	{
+	}
+	
+	message get_award_resp
+	{
+		optional int32 result	= 1;		// 玩家ID
+		repeated int32 ranking	= 2;		// 名次
+	}
+	
+	message is_clear_point
+	{
+	}
+	
+	message is_clear_point_resp
+	{
+		optional int32 result	= 1;		// 玩家ID
+		optional bool isClear = 2;			//是否清空
+	}
+	

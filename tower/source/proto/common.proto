@@ -1,0 +1,91 @@
+
+
+	//帐号信息
+	message UserInfo
+	{
+		optional int32 roleid = 1;		//玩家ID
+		optional string rolename = 2;	//昵称
+		optional int32 coins = 3;		//游戏币
+		optional bool isFirst = 4;		//开场动画
+		optional int32 currentFace = 5;	//现在使用的头像编号
+		repeated int32 storyData = 6;	//剧情对话 
+		repeated int32 teachData  = 8;	//引导
+		repeated int32 faceList = 9;	//头像
+
+	}
+
+	//背包信息
+	message Prop
+	{
+		optional string id = 1;			//物品唯一ID,如果为空表示客户端新加物品
+		optional int32 dataid = 2;		//物品编号
+		optional int32 count = 3;		//数量
+		optional int32 expiretime = 4;  //过期时间，默认-1
+	}
+
+	//角色信息
+	message GameRole
+	{
+		optional int32 id = 1; //角色编号
+		optional int32 level = 2; //角色等级
+	}
+
+	//好友信息
+	/*message FriendInfo
+	{ 
+		optional int32 roleid = 1;		 //好友ID
+		optional string rolename = 2;	  //好友昵称
+		optional string roleresource = 3;//好友资源
+		optional int32 score = 4;//分数
+		optional int32 distance = 5;//距离
+		optional int32 energyreqcount = 6; //体力请求次数
+	}*/
+
+	//成就信息
+	message Achievement
+	{
+		optional int32 id = 1;			//成就ID
+		optional int32 progress = 2;	//进度
+		optional int32 stage = 3;		//阶段
+		optional int32 status = 4;		//状态 1：未完成 2：完成未领取，3：已领取
+	}
+//关卡信息
+message PassInfo
+{
+	optional int32 passid = 1;		// 关卡id
+	optional int32 point = 2;		// 分数
+	optional int32 star = 3;		// 星数
+}
+
+//好友信息
+message FriendInfo
+{ 
+	optional int32	roleid = 1;			// 好友ID
+	optional string	rolename = 2;		// 好友昵称
+	optional int32	currentFace = 3;	// 现在使用的头像编号
+	optional int32	passMax = 4;		// 通了几关
+	optional int32	point = 5;
+	optional int32	towerMax = 6;		// 爬塔最高层
+
+}
+
+
+	 message login_auth
+	{
+        	optional string bindaccount 	= 1;	 //绑定账号
+        	optional int32  serverid		= 2;	 //服务器编号
+        	optional int32  platformid		= 3;	 //ID
+        	optional string deviceid		= 4;	 //设备标识ID
+  			optional string userid			= 5;	 //用户登录ID
+			optional int32  version			= 6;	 //客户端版本
+	}
+
+    message login_auth_resp
+	{
+        optional int32 roleid = 1; //角色id
+        optional int32 systime = 2;//系统时间
+		optional int32 minversion = 3;//最低版本
+   }
+
+
+

@@ -1,0 +1,14 @@
+ID,Name,Width,Height,PositionX,PositionY,Speed,Order
+1,bg_front_1.png,1295,196,0,186,7,5
+2,bg_front_2.png,1277,175,1279,166,7,5
+3,g_ground_1.png,640,215,0,215,6,4
+4,g_ground_2.png,640,187,640,187,6,4
+5,g_ground_3.png,640,195,1280,196,6,4
+6,bg_ongroud_7.png,33,125,1000,283,6,3
+7,bg_ongroud_6.png,196,377,1300,537,6,3
+8,bg_ongroud_5.png,75,125,1800,287,6,3
+9,bg_back_a1.png,1280,308,0,384,4,2
+10,bg_back_a2.png,1280,310,1280,384,4,2
+11,bg_back_a3.png,1280,465,2560,519,4,2
+12,bg_far_1.png,1280,721,0,760,1,1
+13,bg_far_2.png,1280,720,1280,760,1,1
