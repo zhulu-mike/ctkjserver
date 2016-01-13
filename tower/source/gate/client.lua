@@ -41,7 +41,7 @@ end
 --used
 --登陆
 function cclient:onlogin(uid,data)
-	dprint("login role",uid,data.userid)
+	trace("user [" .. data.userid .."] login")
 
 	self.uid   = uid
 	self.data = data
@@ -208,7 +208,7 @@ function cclient:update(delta)
 
 		--1分后断开未验证连接
 		if self.authtimer >= 60 then
-			dprint("authtimeout")
+			trace("authtimeout")
 			self.disconnect = true
 			skynet.call(dog,"lua","close",self.fd)
 		end
@@ -239,7 +239,7 @@ function cclient:addmail(mailid,mailtype,sendroleid,sendname,sendresource,title,
 	local data = self.data
 	table.insert(data.mails,mail)
 
-	dprint("receive mail from",sendroleid,"title",title)
+	trace("receive mail from",sendroleid,"title",title)
 	return mail
 end
 

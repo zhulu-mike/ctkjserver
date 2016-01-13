@@ -40,7 +40,7 @@ function CMD.start()
 		end
 	end
 
-	print("success "..maxconn.." to connect to redis server")
+	trace("success "..maxconn.." to connect to redis server")
 end
 --一次设置一组key-value值
 --@param uid redis线程标识符

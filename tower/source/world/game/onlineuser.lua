@@ -15,7 +15,6 @@ function conlineuser:ctor()
 	self.online  = false
 	self.disconnecttime = 0
 	self.uid = 0
-	self.roleid = 0
 
 	--account data
 	self.id = 0 			--用户id
@@ -23,19 +22,21 @@ function conlineuser:ctor()
 	self.lastdeviceid = "" 		--最后设备ID
 
 	--player data
-	self.playerdata = nil
+	-- self.playerdata = nil
 end
-
+--used
+--登陆
 function conlineuser:onlogin()
 	self.disconnecttime = 0
 end
-
+--used
+--在线玩家下线时，保存一次数据
 function conlineuser:onremove()
 	skynet.send(db,"lua","saveuser",self.account)
-	self:save()
 	allacc.remove(self.id)
 end
-
+--used
+--当失去链接超过ONLINE_USER_KICKTIME时间后，销毁自身
 function conlineuser:update(delta)
 	if not self.online then
 		self.disconnecttime = self.disconnecttime + delta
@@ -49,13 +50,7 @@ function conlineuser:update(delta)
 	return true
 end
 
-function conlineuser:save()
-	if self.playerdata then
-		skynet.send(db,"lua","saveplayer",self.uid,self.playerdata)
-		self.playerdata = nil
-	end
-end
-
+--used
 function conlineuser:send( ... )
 	local ok,r1,r2,r3 = pcall(cluster.call,self.gate,self.agent,self.agentid,...)
 	
@@ -66,6 +61,8 @@ function conlineuser:send( ... )
 	return r1,r2,r3
 end
 
+--used
+--断开链接
 function conlineuser:ondisconnect()
 	self.online = false
 	self.disconnecttime = 0

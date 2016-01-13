@@ -16,7 +16,7 @@ require "dbuser"
 --used
 --从mysql初始化数据到redis
 function initfromdb()
-	print("begin init db")
+	trace("begin init db")
 	local mintime = os.time() - 7 * ONE_DAY;
 	--取出最近7天登陆的数据备份热数据到redis
 	local accounts = sqlconditionquery(tbl_user,"lastlogintime>=%d",mintime)
@@ -24,7 +24,7 @@ function initfromdb()
 	if accounts then
 		for _,row in ipairs(accounts) do
 			if LOG_LEVEL > 2 then
-				print("add user to redis："+row.id)
+				trace("add tbluser to redis："+row.id)
 			end
 			redis_adduser(row)
 		end
@@ -37,6 +37,9 @@ function initfromdb()
 		end
 	end
 
+	--载入其他数据
+
+
 	redis_set("dbversion",1)
 end
 
@@ -48,7 +51,7 @@ function saveplayertosql()
 		return
 	end
 
-	dprint("save role ",id)
+	trace("save role ",id)
 	local dat = redis_getplayer(id)
 
 	if not dat then
@@ -107,8 +110,9 @@ function checksaveroles()
 end
 
 
-
-function saveuser(user)
+--used
+--保存数据到redis
+function saveusertoredis(user)
 	redis_adduser(user)
 end
 

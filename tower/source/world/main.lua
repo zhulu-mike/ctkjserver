@@ -62,7 +62,7 @@ skynet.start(function()
 	end)
 
 	skynet.register(".world")
-	print("wait for db to start")
+	trace("wait for db to start")
 
 	--等待DB启动完成
 	while true do
@@ -75,7 +75,7 @@ skynet.start(function()
 		end
 	end
 
-	print("db is ok")
+	trace("db is ok")
 	worldid = skynet.getenv("worldid")
 	
 	skynet.fork(function()
@@ -125,5 +125,5 @@ skynet.start(function()
 	end
 
 	registergates = {}
-	print("world server started")
+	trace("world server started")
 end)

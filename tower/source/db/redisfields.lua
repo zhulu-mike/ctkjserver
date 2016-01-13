@@ -16,7 +16,7 @@ redis_userdetail =
 	name = "tbluserdetail",
 	fields = {"userid","nickname","gold","diamond","energy"},
 	--默认值
-	defaults = {gold=0,diamond=0,energy=0},
+	defaults = {gold=500,diamond=0,energy=100},
 	--建立的索引
 	index = {"userid"}
 }

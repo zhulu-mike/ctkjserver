@@ -129,7 +129,7 @@ function loaduserdetail(id, autords)
 	end
 	--从mysql中读取userdetail数据
 	if (LOG_LEVEL > 0) then
-		dprint("load userdetail from sql ",id)
+		trace("load userdetail from sql ",id)
 	end
 	local detail = sqlfetchone(tbl_userdetail,id)
 	return redis_adduserdetail(detail);

@@ -97,7 +97,7 @@ function updaterank()
 	loadranks()
 
 	if checknewrank() then
-		print("new rank")
+		trace("update new rank")
 		newrank()
 	end
 end

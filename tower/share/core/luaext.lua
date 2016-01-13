@@ -151,16 +151,16 @@ function table.serialize(obj)
     elseif t == "boolean" then  
         lua = lua .. tostring(obj)  
     elseif t == "string" then  
-        lua = lua .. string.format("%q", obj)  
+        lua = lua .. string.format("%s", obj)  
     elseif t == "table" then  
-        lua = lua .. "{\n"  
+        lua = lua .. "{"  
         for k, v in pairs(obj) do  
-            lua = lua .. "[" .. table.serialize(k) .. "]=" .. table.serialize(v) .. ",\n"  
+            lua = lua .. table.serialize(k) .. "=" .. table.serialize(v) .. ","  
         end  
         local metatable = getmetatable(obj)  
         if metatable ~= nil and type(metatable.__index) == "table" then  
             for k, v in pairs(metatable.__index) do  
-                lua = lua .. "[" .. table.serialize(k) .. "]=" .. table.serialize(v) .. ",\n"  
+                lua = lua .. table.serialize(k) .. "=" .. table.serialize(v) .. ","  
             end  
         end  
         lua = lua .. "}"  
@@ -484,4 +484,8 @@ function dprint( ... )
         if DEBUG then
             print(...)
         end
+end
+--打印带时间的日志
+function trace(...)
+    print(os.date("%Y-%m-%d %H:%M:%S")..":", ...)
 end

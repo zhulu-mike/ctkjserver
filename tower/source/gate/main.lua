@@ -8,7 +8,7 @@ local running = true
 
 --关服处理
 function CMD.onclose()
-	print("closeserver ...")
+	trace("closeserver ...")
 
 	skynet.call(".watchdog","lua","onclose")
 	running = false
@@ -59,7 +59,7 @@ skynet.start(function()
 					nodelay = true,
 				})
 
-				print("Watchdog listen on ", gateport)
+				trace("Watchdog listen on ", gateport)
 				break
 			end
 

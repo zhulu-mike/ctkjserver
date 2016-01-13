@@ -74,10 +74,10 @@ local function getbybindaccount(accountname,serverid,qudaoid)
 	end
 	local account = skynet.call(db,"lua","loaduserbybindaccount",accountname,serverid,qudaoid)
 	-- if account then
-	-- 	print("allacc.getbybindaccount." .. table.serialize(account))
+	-- 	trace("allacc.getbybindaccount." .. table.serialize(account))
 	-- else
-	-- 	print("getbybindaccount no account")
-	end
+	-- 	trace("getbybindaccount no account")
+	-- end
 	if account then
 		bind(account)
 	end

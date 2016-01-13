@@ -41,9 +41,9 @@ local function get_defaults(tbname)
     for _, row in pairs(rs) do
         defaults[row["Field"]] = row["Default"]
         if LOG_LEVEL > 1 and row["Default"] ~= nil then
-            print(row["Field"] .. " default value is：" .. row["Default"])
+            trace(row["Field"] .. " default value is：" .. row["Default"])
         elseif LOG_LEVEL > 1 then
-            print(row["Field"] .. " default value is：nil")
+            trace(row["Field"] .. " default value is：nil")
         end
     end
     return defaults

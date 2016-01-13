@@ -25,11 +25,11 @@ function sendpackage(fd,code,data)
 	local msg = MSG[code]
 	
 	if msg == nil then
-		dprint("unknown msg: not registered",code)
+		trace("unknown msg: not registered",code)
 		return
 	end
 	if LOG_LEVEL > 0 then
-		print("send resp：" .. msg.proto .. "," .. table.serialize(data))
+		trace("send resp：" .. msg.proto .. "," .. table.serialize(data))
 	end
 	socket.write(fd, encode(code,msg.proto,data))
 end
@@ -52,7 +52,7 @@ skynet.register_protocol {
 		local result,error = protobuf.decode(msg.proto, stringbuffer)
 
 		if  error then
-			dprint("failed to decode proto:",msg.proto)
+			trace("failed to decode proto:",msg.proto)
 			return
     		end
 
@@ -67,7 +67,7 @@ skynet.register_protocol {
 		end
 		if LOG_LEVEL > 0 then
 			local receive = ...
-			print("received res：" .. msg.proto .. "," .. table.serialize(receive))
+			trace("received res：" .. msg.proto .. "," .. table.serialize(receive))
 		end
 		local client = fdclients[fd]
 
@@ -114,7 +114,7 @@ skynet.start(function()
 			if f then
 				returnwarp(f(client,...))
 			else
-				dprint("invalid call",command2)
+				trace("invalid call",command2)
 			end
 		end
 	end)

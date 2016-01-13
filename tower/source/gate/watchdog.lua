@@ -26,8 +26,9 @@ function SOCKET.open(fd, addr)
 		skynet.call(gate, "lua", "kick", fd)
 		return
 	end
-
-	dprint("New client from : " .. addr)
+	if LOG_LEVEL > 0 then
+		trace("New client from : " .. addr)
+	end
 
 	local s = slaves[balance]
 	balance = balance + 1

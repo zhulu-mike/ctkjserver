@@ -128,7 +128,7 @@ skynet.start(function()
           end
     end
 
-    print("success to connect to mysql server",host,port)
+    trace("success to connect to mysql server",host,port)
 
     skynet.dispatch("lua", function(session, source, cmd,...)
         local f = assert(CMD[cmd], cmd .. "not found")

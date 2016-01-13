@@ -8,7 +8,7 @@ _ENV = CMD
 
 -----------------------------------------------------------------------------------
 function onclose()
-	print("close server")
+	trace("close server")
 end
 
 function loaduser(id)
@@ -56,7 +56,7 @@ function loadplayer(id)
 	local r = datapool.loaduser(id)
 
 	if not r then
-		dprint("failed to load player ",id)
+		trace("failed to load player ",id)
 	else
 		redis_removesqlsavelist(id)
 		redis_setrole_ttl(id,0)
@@ -117,22 +117,18 @@ function createuser(userid,data)
 
 	return datapool.createuser(data)
 end
-
+--used
+--保存玩家数据
 function saveuser(user)
 	if not user.lastlogouttime then
 		user.lastlogouttime = 0
 	end
 
 	if not user.lastlogintime then
-		user.lastlogintime = 0
+		user.lastlogintime = os.time()
 	end
 
-	datapool.saveuser(user)
-
-	if user.roleid ~= 0 then
-		redis_addsqlsavelist(user.roleid)
-	end
-
+	datapool.saveusertoredis(user)
 	return NONE
 end
 

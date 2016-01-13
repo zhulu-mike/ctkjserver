@@ -103,7 +103,7 @@ skynet.start(function()
 
 	local oldday = datetime(os.time())
 	local newday = false
-	--创建一个子进程定时器，每500毫秒跑一次，新的一天调用mainupdate接口。
+	--创建一个子进程定时器，每5秒跑一次，新的一天调用mainupdate接口。
 	skynet.fork(function()
 		while running do
 			local curday = datetime(os.time())
@@ -119,6 +119,6 @@ skynet.start(function()
 		end
 	end)
 
-	print("serverstart")
+	trace("serverstart")
 	serverstart = true
 end)
