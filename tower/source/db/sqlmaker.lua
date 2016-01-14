@@ -219,7 +219,7 @@ function sqlinsert(tbl,dat)
 
     for field,fi in pairs(fields) do
         if not dat[field] then
-            if not defaults[field] then
+            if defaults[field] then
                 dat[field] = defaults[field]
             elseif fi == "date" then
                 dat[field] = os.time()

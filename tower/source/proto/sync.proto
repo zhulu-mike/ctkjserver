@@ -1,0 +1,21 @@
+/**
+* 请求登录验证  id:100
+*/
+
+package sync;
+
+message res
+{
+    optional string userid 	= 1; //玩家唯一ID
+    optional int32  gold	= 2;	 //黄金
+    optional int32  diamond	= 3;	 //钻石
+    optional int32 act	= 4;	 //行动力
+    optional int32 star	= 5;	 //星星数量
+    optional int32 acttime	= 6;	 //行动力下次刷新时间
+    optional int32  version	= 7;		 //客户端资源数据版本
+}
+
+message res_resp
+{
+    optional int32 ret = 1;	      //错误码，0表示同步成功
+}

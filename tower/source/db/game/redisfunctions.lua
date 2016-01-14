@@ -72,15 +72,7 @@ function redis_getsimplerole(id)
 
     return r
 end
---used
-function redis_getuserdetail(id)
-    local detail = redisquery(redis_userdetail,id)
 
-    if not detail then
-        return
-    end
-    return detail
-end
 
 function redis_fetchnewmails(id)
     local tbl = redis_role_offlinemail
@@ -214,4 +206,61 @@ end
 --把一条userdetail数据加载到redis中
 function redis_adduserdetail( data )
     return redisinsert(redis_userdetail,data.userid,data)
+end
+--used
+function redis_getuserdetail(id)
+    local data = redisquery(redis_userdetail,id)
+
+    if not data then
+        return
+    end
+    convertfields(tbl_userdetail.schema.fields,data)
+    return detail
+end
+--used
+--获取usertime表的数据
+function redis_getusertime(id)
+    local data = redisquery(redis_usertime,id)
+
+    if not data then
+        return
+    end
+    convertfields(tbl_usertime.schema.fields,data)
+    return data
+end
+--把一条usertime数据加载到redis中
+function redis_addusertime( data )
+    return redisinsert(redis_usertime,data.userid,data)
+end
+
+--used
+--获取userheros表的数据
+function redis_getuserheros(id)
+    local data = redisquery(redis_userheros,id)
+
+    if not data then
+        return
+    end
+    convertfields(tbl_userheros.schema.fields,data)
+    return data
+end
+--把一条userheros数据加载到redis中
+function redis_adduserheros( data )
+    return redisinsert(redis_userheros,data.userid,data)
+end
+
+--used
+--获取userrounds表的数据
+function redis_getuserrounds(id)
+    local data = redisquery(redis_userrounds,id)
+
+    if not data then
+        return
+    end
+    convertfields(tbl_userrounds.schema.fields,data)
+    return data
+end
+--把一条userrounds数据加载到redis中
+function redis_adduserrounds( data )
+    return redisinsert(redis_userrounds,data.userid,data)
 end

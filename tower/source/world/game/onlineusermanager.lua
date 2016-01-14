@@ -67,39 +67,10 @@ function add(user)
 	users[user.id] = user
 end
 
-local function newroledata(userid)
-	local role = {}
-
-	role.userid = userid
-	role.lastenergydatetime = os.time()
-	role.rolelevel = 0
-	role.roleexp = 0
-	role.roletype  = 1
-	role.rolename = ""
-	role.roleresource = ""
-	role.currentsceneid = 0
-	role.totalstarcount = 0
-	role.maxscore = 0
-	role.maxdistance = 0
-	role.viplevel = 0
-	role.vipexp = 0
-	role.version = 0
-	role.coins = 0
-	role.stonecoins = 0
-	role.rmb = 0
-	role.energy = 5
-	role.roletype = 0
-	role.isFirst = 0
-	role.newguide = 0
-	role.currentFace = 1
-	role.point = 0
-
-	return skynet.call(db,"lua","newplayer",role)
-end
 
 function login(user)
 	local acc = user.account
-	acc.user.lastlogintime = os.time()
+	acc.lastlogintime = os.time()
 
 	user:onlogin()
 

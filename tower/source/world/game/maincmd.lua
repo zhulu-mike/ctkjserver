@@ -30,8 +30,8 @@ local function dologinaccount(input)
 			--不知为何要合并
 			-- table.merge(user,account)
 		end
-
-		user.account = account
+		user.account = account.user
+		user.playerdata = account.playerdata
 	else
 		local kickoldplayer = true
 		--处于在线列表中，先杀死旧的登陆信息，防止账号重复登陆
@@ -74,7 +74,7 @@ local function dologinaccount(input)
 	-- 	user.playerdata = nil
 	-- end
 
-	local acc = user.account.user
+	local acc = user.account
 
 	acc.lastip = input.ip 		--最后登录ip
 	acc.lastlogintime = os.time()
@@ -87,9 +87,9 @@ local function dologinaccount(input)
 	user.uid = uid
 	user.online = true
 	user.disconnecttime = 0
-	user.name = user.account.detail.nickname
+	user.name = user.playerdata.detail.nickname
 
-	return 0,uid,user.account.detail
+	return 0,uid,user.playerdata
 end
 
 local loginflags = {}
@@ -106,9 +106,10 @@ function loginaccount(input)
 	loginflags[userkey] = nil
 	return errorcode,uid,playerdata
 end
-
+--used
+--客户端断开链接时
 function lostclient(uid,input)
-	local user = usermanager.getuser(input.role.userid)
+	local user = usermanager.getuser(input.detail.userid)
 
 	if user then
 		if user.uid > uid then
@@ -123,101 +124,7 @@ function lostclient(uid,input)
 	end
 end
 
-function addfriend(roleid,addroleid)
-	local user = usermanager.getuserbyrole(roleid)
 
-	if not user then
-		return CODE_FAILED
-	end
-
-	local addrole = allrole.getrole(addroleid)
-
-	if not addrole then
-		return GAME_CODE_ERROR_ROLE_NOT_FIND
-	end
-
-	local adduser = usermanager.getuserbyrole(addroleid)
-
-	if adduser and adduser.online then
-		local mailid = mailmanager.genuid()
-		return adduser:send("friendinvite",mailid,roleid,user.role.rolename,user.role.roleresource)
-	else
-		--收入邮件管理器
-		mailmanager.add(roleid,MAIL_TYPE_FRIEND_ADD,addroleid,"申请好友","",-1)
-		return 0
-	end
-end
-
-function acceptfriend(roleid,targetid)
-	local sender = allrole.getrole(roleid)
-
-	if not sender then
-		return
-	end
-
-	local user = usermanager.getuserbyrole(targetid)
-	local ok
-
-	--添加好友
-	if user and user.online then
-		ok = user:send("acceptfriend",roleid)
-	end
-
-	--收入邮件管理器
-	if ok ~= 0 then
-		mailmanager.add(roleid,MAIL_TYPE_FRIEND_ACCEPT,targetid,"接受好友","",-1)
-	end
-end
-
-function delfriend(roleid,delfriendid)
-	local user = usermanager.getuserbyrole(delfriendid)
-	local ok
-
-	--删除好友
-	if user and user.online then
-		ok = user:send("senddelfriend",roleid)
-	end
-
-	--收入邮件管理器
-	if ok ~= 0 then
-		mailmanager.add(roleid,MAIL_TYPE_FRIEND_DEL,delfriendid,"删除好友","",-1)
-	end
-end
-
-function sendmail(sendroleid,mailtype,recvid,title,content,expiredate)
-	local sender = allrole.getrole(sendroleid)
-	local recvrole = allrole.getrole(recvid)
-
-	if not recvrole then
-		return CODE_FAILED
-	end
-
-	local recvuser = usermanager.getuserbyrole(recvid)
-	local ok = false
-
-	--发往玩家邮件数据池
-	if recvuser and recvuser.online then
-		local mailid = mailmanager.genuid()
-
-		if sender then
-			ok = recvuser:send("sendmail",mailid,sendroleid,sender.rolename,sender.roleresource,mailtype,title,content,expiredate)
-		else
-			ok = recvuser:send("sendmail",mailid,0,"system","",mailtype,title,content,expiredate)
-		end
-	end
-
-	--收入邮件管理器
-	if ok ~= 0 then
-		mailmanager.add(sendroleid,mailtype,recvid,title,content,expiredate)
-	end
-
-	return 0
-end
-
-function notifymail(sendroleid,mailtype,recvid,title,content,expiredate)
-	sendmail(sendroleid,mailtype,recvid,title,content,expiredate)
-	return NONE
-end
 
 --体力申请
 function energyrequest(roleid,targetid)
@@ -244,30 +151,7 @@ function energyrequest(roleid,targetid)
 	return 0
 end
 
---体力赠送
-function energygive(roleid,targetid)
-	local sender = allrole.getrole(roleid)
 
-	if not sender then
-		return CODE_FAILED
-	end
-
-	local recvuser = usermanager.getuserbyrole(targetid)
-	local ok = false
-
-	--发往玩家邮件数据池
-	if recvuser and recvuser.online then
-		local mailid = mailmanager.genuid()
-		ok = recvuser:send("sendmail",mailid,roleid,sender.rolename,sender.roleresource,MAIL_TYPE_ENERGY_GIVE,"体力赠送","",ONE_WEEK)
-	end
-
-	--收入邮件管理器
-	if ok ~= 0 then
-		mailmanager.add(roleid,MAIL_TYPE_ENERGY_GIVE,targetid,"体力赠送","",ONE_WEEK)
-	end
-
-	return 0
-end
 
 --更新排行榜缓存
 function updateranks(type,data)

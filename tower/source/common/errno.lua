@@ -1,5 +1,5 @@
 
-CODE_CT_SUCCESS = 0
+EXCUTE_SUCCESS = 0 --成功
 CODE_SUCCESS = 1 --执行成功(默认)
 CODE_FAILED = -100 --执行失败(默认)
 	

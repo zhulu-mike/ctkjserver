@@ -42,7 +42,7 @@ function initfromdb()
 
 	redis_set("dbversion",1)
 end
-
+--used
 --同步数据从redis到mysql
 function saveplayertosql()
 	local id = redis_popsqlsavelist()
@@ -70,14 +70,6 @@ function saveplayertosql()
 	dat.sign.roleid = id
 	sqlupdate(tbl_role_sign,dat.sign)
 
-	--mails
-	local mails = dat.mails
-	sqldel(tbl_role_mail,"recvroleid=%d",role.id)
-
-	for _,mail in ipairs(mails) do
-		sqlinsert(tbl_role_mail,mail)
-	end
-
 	redis_setrole_ttl(id,REDIS_PLAYER_TTL)
 end
 
@@ -95,7 +87,7 @@ function saveplayer(dat)
 end
 
 
-
+--used
 function checksaveroles()
 	local roles = rcmd("keys","roledetail:*")
 

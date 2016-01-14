@@ -10,7 +10,8 @@ setmetatable(allacc,{__index = _G})
 _ENV = allacc
 
 function bind(data)
-	accounts[data.user.id] = data
+	--这里只存储账户数据，即user表，其他玩家数据在onlineuser里面
+	accounts[data.user.id] = data.user
 
 	--by accountname
 	local key = data.user.username
@@ -63,7 +64,7 @@ function hasaccount(id)
 		return false
 	end
 end
-
+--used
 --使用绑定账户登陆
 local function getbybindaccount(accountname,serverid,qudaoid)
 	local key = table.implode({accountname,qudaoid,serverid},"_");
@@ -80,9 +81,11 @@ local function getbybindaccount(accountname,serverid,qudaoid)
 	-- end
 	if account then
 		bind(account)
+		return account
 	end
-	return account
+	return
 end
+--used
 --使用用户名登陆
 local function getbyaccountname(accountname,serverid,qudaoid)
 	local key = table.implode({accountname,qudaoid,serverid},"_");
@@ -95,11 +98,12 @@ local function getbyaccountname(accountname,serverid,qudaoid)
 	local account = skynet.call(db,"lua","loaduserbyname",accountname,serverid,qudaoid)
 
 	if account then
-
 		bind(account)
+		return account
 	end
-	return account
+	return
 end
+--used
 --获取用户账户数据
 function getbyaccount(accountname,bindaccount,serverid,qudaoid)
 	if not bindaccount or bindaccount == 0 then
@@ -123,13 +127,13 @@ function getbyaccount(accountname,bindaccount,serverid,qudaoid)
 
 	if bindaccount ~= "" then
 		--帐号是否已绑定
-		if acc.user.binduname and accc.user.binduname ~= "" then
-			if accc.user.binduname ~= bindaccount  then
+		if acc.binduname and acc.binduname ~= "" then
+			if acc.binduname ~= bindaccount  then
 				return
 			end
 		end
 
-		accc.user.binduname = bindaccount
+		acc.binduname = bindaccount
 		bind(acc)
 	end
 
@@ -148,7 +152,7 @@ function remove(id)
 		return
 	end
 
-	usersbyaccount[user.user.username] = nil
-	usersbybindaccount[user.user.binduname] = nil
+	usersbyaccount[user.username] = nil
+	usersbybindaccount[user.binduname] = nil
 	accounts[id] = nil
 end

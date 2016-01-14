@@ -112,7 +112,7 @@ function redisinsert(tbl,id,dat,ttl)
 
         if v then
             tdat[field] = v
-        elseif not defaults[field] then
+        elseif defaults[field] then
             tdat[field] = defaults[field]
             --有默认值就设置默认值
         end

@@ -70,19 +70,19 @@ function saveplayer(uid,data)
 		return NONE
 	end
 
-	local ruid = roleuids[data.role.id]
+	-- local ruid = roleuids[data.detail.userid]
 
-	if not ruid then
-		ruid = -1
-	end
+	-- if not ruid then
+	-- 	ruid = -1
+	-- end
 
-	if uid >= ruid then
-		datapool.saveplayer(data)
+	-- if uid >= ruid then
+	-- 	datapool.saveplayer(data)
 
-		if uid > ruid then
-			roleuids[data.role.id] = uid
-		end
-	end
+	-- 	if uid > ruid then
+	-- 		roleuids[data.role.id] = uid
+	-- 	end
+	-- end
 
 	return NONE
 end
