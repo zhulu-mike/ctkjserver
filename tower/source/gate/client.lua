@@ -3,6 +3,14 @@ local skynet = require "skynet"
 
 --一个用户的数据结构
 cclient = class("cclient")
+--[[
+data{
+	detail:{},
+	heros:{},
+	rds:{},
+	timeinfo:{}
+}
+]]--
 
 function cclient:ctor()
 	self.loging = false
@@ -27,14 +35,13 @@ function cclient:send(...)
 end
 --used
 --登陆
-function cclient:onlogin(uid,data)
-	trace("user [" .. data.userid .."] login")
+function cclient:onlogin(uid,detail)
+	trace("user [" .. detail.userid .."] login")
 
 	self.uid   = uid
-	self.data = data
-	self.id     = data.userid
-	self.userid = data.userid
-	self.name     = data.nickname
+	self.id     = detail.userid
+	self.userid = detail.userid
+	self.name     = detail.nickname
 	self.running = true
 
 	local  curtime = os.time()
@@ -146,9 +153,13 @@ end
 --重置所有数据的状态
 function cclient:resetdatastate( )
 	self.data.detail.invalid = false
+	self.data.detail.lastversion = self.data.detail.version
 	self.data.heros.invalid = false
+	self.data.heros.lastversion = self.data.heros.version
 	self.data.rds.invalid = false
+	self.data.rds.lastversion = self.data.rds.version
 	self.data.timeinfo.invalid = false
+	self.data.timeinfo.lastversion = self.data.timeinfo.version
 end
 --每天凌晨初始化数据
 function cclient:resetdayrecord(dayid)
@@ -171,7 +182,7 @@ function cclient:update(delta)
 	end
 	if self.running then
 		self.savetimer = self.savetimer + delta
-
+		--每隔几秒更新一次
 		if self.savetimer >= PLAYER_SAVE_INTERVAL then
 			local data = self:builddata()
 			if not data then

@@ -133,15 +133,19 @@ function loaduserother(id)
 	local ret = {}
 	--资源数据
 	local data = loaduserdetail(id, true)
+	data.lastversion = data.version
 	ret.detail = data
 	--时间数据
 	data = loadusertime(id,true)
+	data.lastversion = data.version
 	ret.timeinfo = data
 	--英雄数据
 	data = loaduserheros(id,true)
+	data.lastversion = data.version
 	ret.heros = data
 	--关卡数据
 	data = loaduserrounds(id,true)
+	data.lastversion = data.version
 	ret.rds = data
 	--get new mails，获取邮件数据
 	-- local nmails = redis_fetchnewmails(id)

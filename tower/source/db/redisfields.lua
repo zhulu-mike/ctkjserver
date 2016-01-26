@@ -44,9 +44,9 @@ redis_userrounds =
 redis_usertime = 
 {
 	name = "tblusertime",
-	fields = {"userid","energytime"},
+	fields = {"userid","energytime","version"},
 	--默认值
-	defaults = {energytime=0},
+	defaults = {energytime=0,version=1},
 	--建立的索引
 	index = {"userid"}
 }

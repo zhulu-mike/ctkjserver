@@ -44,6 +44,7 @@ function initfromdb()
 end
 --used
 --同步数据从redis到mysql
+--每隔5秒钟同步一次
 function saveplayertosql()
 	local id = redis_popsqlsavelist()
 

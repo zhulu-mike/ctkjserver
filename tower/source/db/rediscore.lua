@@ -138,6 +138,39 @@ function redisinsert(tbl,id,dat,ttl)
 
     return tdat
 end
+--used
+--向redis中更新一条数据
+--@param tbl 要更新的数据结构，参照redisfield.lua
+--@param id 关键id
+--@param dat 数据table
+--@param ttl 失效时间，单位秒
+function redisupdate(tbl,id,dat,ttl)
+    --check fields
+    local fields = tbl.fields
+    local defaults = tbl.defaults
+    local key = makerediskey(tbl.name,id)
+
+    local tdat = {}
+
+    for _,field in ipairs(fields) do
+        local v = dat[field]
+
+        if v then
+            tdat[field] = v
+        elseif defaults[field] then
+            tdat[field] = defaults[field]
+            --有默认值就设置默认值
+        end
+    end
+
+    urcmd(id,"hmset",key,tdat)
+
+    if ttl and ttl > 0 then
+        urcmd(id,"expire",key,ttl)
+    end
+
+    return tdat
+end
 
 function redis_get(key)
     return rcmd("get",key)

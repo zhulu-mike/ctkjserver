@@ -64,25 +64,31 @@ function loadplayer(id)
 
 	return r
 end
-
+--保存玩家的数据
 function saveplayer(uid,data)
 	if not data or not uid then
 		return NONE
 	end
+	--如果玩家数据的版本号变化了，就同步
+	local d = data.detail
+	if d and d.version > d.lastversion then
+		redisupdate(redis_usedetail,d.userid,d)
+	end
 
-	-- local ruid = roleuids[data.detail.userid]
+	d = data.heros
+	if d and d.version > d.lastversion then
+		redisupdate(redis_usedheros,d.userid,d)
+	end
 
-	-- if not ruid then
-	-- 	ruid = -1
-	-- end
+	d = data.rds
+	if d and d.version > d.lastversion then
+		redisupdate(redis_usedrounds,d.userid,d)
+	end
 
-	-- if uid >= ruid then
-	-- 	datapool.saveplayer(data)
-
-	-- 	if uid > ruid then
-	-- 		roleuids[data.role.id] = uid
-	-- 	end
-	-- end
+	d = data.timeinfo
+	if d and d.version > d.lastversion then
+		redisupdate(redis_usedtime,d.userid,d)
+	end
 
 	return NONE
 end
