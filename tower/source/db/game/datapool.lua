@@ -46,45 +46,33 @@ end
 --同步数据从redis到mysql
 --每隔5秒钟同步一次
 function saveplayertosql()
-	local id = redis_popsqlsavelist()
+	local userid = redis_popsqlsavelist()
 
-	if not id then
+	if not userid then
 		return
 	end
+	trace("save user to sql:",userid)
+	local data = redis_getuserdetail(userid)
+	sqlupdate(tbl_userdetail,data)
 
-	trace("save role ",id)
-	local dat = redis_getplayer(id)
+	data = redis_getusertime(userid)
+	sqlupdate(tbl_usertime,data)
 
-	if not dat then
-		return
-	end
+	data = redis_getuserheros(userid)
+	-- trace(data.heros)
+	sqlupdate(tbl_userheros,data)
 
-	dat.roleid = id
-	local role = dat.role
+	data = redis_getuserrounds(userid)
+	sqlupdate(tbl_userrounds,data)
 
-	--save user
-	local user = redis_loaduser(role.userid)
-	sqlupdate(tbl_user,user)
+	data = redis_loaduser(userid)
+	sqlupdate(tbl_user,data)
 
-	sqlupdate(tbl_role,role)
-	sqlupdate(tbl_role_status,dat)
-	dat.sign.roleid = id
-	sqlupdate(tbl_role_sign,dat.sign)
 
-	redis_setrole_ttl(id,REDIS_PLAYER_TTL)
 end
 
 function saveplayer(dat)
-	local roleid = dat.role.id
 
-	if rolecahce[roleid] then
-		rolecahce[roleid] = dat.role
-	end
-
-	redis_addplayer(dat)
-
-	--update score
-	redis_addlevelscore(roleid,dat.levelinfo)
 end
 
 
@@ -113,14 +101,13 @@ function savemail(mail)
 	redis_addnewmail(mail)
 end
 
-function newplayer(data)
-	redis_addsimplerole(data)
-	sqlnewplayer(data)
-end
 
 function onnewday( ... )
-	redis_updateloginlist()
 	rolecahce = {}
+end
+
+function saveserverlog(onlinecount)
+	sqlinsert(tbl_server_log,{time=os.time(), online=onlinecount})
 end
 
 return datapool

@@ -127,100 +127,31 @@ function redis_popsqlsavelist()
     return r
 end
 
-function redis_addloginrole(roleid,logintime)
-    rcmd("zadd","loginlist",logintime,roleid)
-end
-
-function redis_updateloginlist()
-    rcmd("ZREMRANGEBYRANK","loginlist",0,-201)
-end
-
-function redis_getloginroles(count)
-    local n = rcmd("ZCARD","loginlist")
-
-    if n == 0 then
-        return
-    end
-
-    local r
-
-    if n <= count then
-        r = rcmd("ZREVRANGE","loginlist",0,-1)
-    else
-        local offset = math.random(0,n - count)
-        r = rcmd("ZREVRANGE","loginlist",offset,offset + count - 1)
-    end
-
-    return r
-end
-
-function redis_addlevelscore(roleid,levelinfo)
-    local t = {}
-
-    for _,li in ipairs(levelinfo) do
-        local score = li[2]
-
-        if score > 0 then
-            t[li[1]] = score
-        end
-    end
-
-    if table.empty(t) then
-        return
-    end
-
-    local key = "rolelevelscore:" .. roleid
-    rcmd("hmset",key,t)
-end
-
-function redis_getlevelscore(roleid,level)
-    local key = "rolelevelscore:" .. roleid
-    local score = rcmd("hget",key,level)
-
-    if not score then
-        score = 0
-    end
-
-    return tonumber(score)
-end
-
-function redis_getexchangecode(code)
-    local key = "exchangecode"
-    local index = rcmd("hget",key,code)
-
-    if not index then
-        return
-    end
-
-    rcmd("hdel",key,code)
-    rcmd("sadd","exchangecodeused",code)
-    return tonumber(index)
-end
 
 -------------wjl----------------
 --used
 --向redis中添加一条tbl_user的记录
 function redis_adduser(dat)
-    return redisinsert(redis_user,dat.id,dat)
+    return redisinsert(redis_user,dat.id,dat,REDIS_PLAYER_TTL)
 end
 --把一条userdetail数据加载到redis中
 function redis_adduserdetail( data )
-    return redisinsert(redis_userdetail,data.userid,data)
+    return redisinsert(redis_userdetail,data.userid,data,REDIS_PLAYER_TTL)
 end
 --used
 function redis_getuserdetail(id)
-    local data = redisquery(redis_userdetail,id)
+    local data = redisquery(redis_userdetail,id,REDIS_PLAYER_TTL)
 
     if not data then
         return
     end
     convertfields(tbl_userdetail.schema.fields,data)
-    return detail
+    return data
 end
 --used
 --获取usertime表的数据
 function redis_getusertime(id)
-    local data = redisquery(redis_usertime,id)
+    local data = redisquery(redis_usertime,id,REDIS_PLAYER_TTL)
 
     if not data then
         return
@@ -230,13 +161,13 @@ function redis_getusertime(id)
 end
 --把一条usertime数据加载到redis中
 function redis_addusertime( data )
-    return redisinsert(redis_usertime,data.userid,data)
+    return redisinsert(redis_usertime,data.userid,data,REDIS_PLAYER_TTL)
 end
 
 --used
 --获取userheros表的数据
 function redis_getuserheros(id)
-    local data = redisquery(redis_userheros,id)
+    local data = redisquery(redis_userheros,id,REDIS_PLAYER_TTL)
 
     if not data then
         return
@@ -246,13 +177,13 @@ function redis_getuserheros(id)
 end
 --把一条userheros数据加载到redis中
 function redis_adduserheros( data )
-    return redisinsert(redis_userheros,data.userid,data)
+    return redisinsert(redis_userheros,data.userid,data,REDIS_PLAYER_TTL)
 end
 
 --used
 --获取userrounds表的数据
 function redis_getuserrounds(id)
-    local data = redisquery(redis_userrounds,id)
+    local data = redisquery(redis_userrounds,id,REDIS_PLAYER_TTL)
 
     if not data then
         return
@@ -262,5 +193,5 @@ function redis_getuserrounds(id)
 end
 --把一条userrounds数据加载到redis中
 function redis_adduserrounds( data )
-    return redisinsert(redis_userrounds,data.userid,data)
+    return redisinsert(redis_userrounds,data.userid,data,REDIS_PLAYER_TTL)
 end

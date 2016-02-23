@@ -9,15 +9,6 @@ MSG[100].on = function(client,input)
 		return
 	end
 
-	--check version
-	if input.version < MIN_VERSION then
-		client:send(200,
-		{
-			error = AUTH_RESULT_VERSION
-		})
-		return
-	end
-
 	if client.loging then
 		return
 	end
@@ -31,16 +22,15 @@ MSG[100].on = function(client,input)
 		serverid = input.serverid,
 		qudao = input.platformid,
 		deviceid = input.deviceid,
-		version = input.version,
 
 		--server settings
 		lastip = client.ip,
 		gate = "gate" .. gateid,
 		agent = skynet.self() ,
-		agentid = client.agentid,
+		agentid = client.agentid
 	}
 
-	local error,uid,playerdata = skynet.call(world,"lua","loginaccount",data)
+	local error,uid,playerdata,lastdeviceid = skynet.call(world,"lua","loginaccount",data)
 
 	if not error then
 		return
@@ -58,21 +48,68 @@ MSG[100].on = function(client,input)
 
 	client:onlogin(uid,playerdata.detail)
 	client.data = playerdata
-	client:send(200,
-	{
-		error = 0,
+	local respdata = {
+		error = 1,
 		userid = playerdata.detail.userid,
 		systime = os.time(),
-		version = CUR_VERSION
-	})
-
+		resupdate = 0,
+		heroupdate = 0,
+		chapterupdate = "",
+		prbupdate = 0,
+		storeupdate = 0
+	}
+	
+	local resversion = input.resversion
+	local herosversion = input.herosversion
+	local chaptersversion = input.chaptersversion
+	local prbversion = input.prbversion
+	local storeversion = input.storeversion
+	local update = false
+	if lastdeviceid and lastdeviceid ~= "" and lastdeviceid ~= input.deviceid then
+		update = true
+	end
+	-- trace(update)
+	-- trace("_" .. input.deviceid)
+	local needsenddetail = false
+	local needsendheros = false
+	if update or playerdata.detail.version > resversion then
+		needsenddetail = true
+	elseif (playerdata.detail.version < resversion) then
+		respdata.resupdate = 1
+	end
+	if update or playerdata.heros.version > herosversion then
+		needsendheros = true
+	elseif (playerdata.heros.version < herosversion) then
+		respdata.heroupdate = 1
+	end
+	client:send(200,respdata)
+	if needsenddetail then
+		client:send(250,{
+			userid = playerdata.detail.userid,
+			gold = playerdata.detail.gold,
+			diamond = playerdata.detail.diamond,
+			act = playerdata.detail.energy,
+			star = playerdata.detail.star,
+			acttime = playerdata.timeinfo.energytime,
+			version = playerdata.detail.version
+			}
+		)
+	end
+	if needsendheros then
+		client:send(251,{
+			userid = playerdata.detail.userid,
+			heros = playerdata.heros.heros,
+			version = playerdata.heros.version
+			}
+		)
+	end
 	client.loging = false
 end
 
 --同步detail数据
 MSG[103].on = function(client,input)
-
-	if input.version < client.data.detail.version then
+	--trace(type(input.version) .. type(client.data.detail.version))
+	if input.version <= client.data.detail.version then
 		client:send(203,
 		{
 			ret = SYN_VERSIONERROR
@@ -97,7 +134,7 @@ end
 --同步heros英雄数据
 MSG[106].on = function(client,input)
 
-	if input.version < client.data.heros.version then
+	if input.version <= client.data.heros.version then
 		client:send(206,
 		{
 			ret = SYN_VERSIONERROR
@@ -116,7 +153,7 @@ end
 --同步rounds关卡数据
 MSG[109].on = function(client,input)
 
-	if input.version < client.data.rds.version then
+	if input.version <= client.data.rds.version then
 		client:send(209,
 		{
 			ret = SYN_VERSIONERROR

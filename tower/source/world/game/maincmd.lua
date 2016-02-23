@@ -75,7 +75,7 @@ local function dologinaccount(input)
 	-- end
 
 	local acc = user.account
-
+	local lastdeviceid = acc.lastdeviceid;
 	acc.lastip = input.ip 		--最后登录ip
 	acc.lastlogintime = os.time()
 	acc.lastdeviceid   = input.deviceid
@@ -89,7 +89,7 @@ local function dologinaccount(input)
 	user.disconnecttime = 0
 	user.name = user.playerdata.detail.nickname
 
-	return 0,uid,user.playerdata
+	return 0,uid,user.playerdata,lastdeviceid
 end
 
 local loginflags = {}
@@ -102,9 +102,9 @@ function loginaccount(input)
 	end
 
 	loginflags[userkey] = true
-	local r,errorcode,uid,playerdata  = pcall(dologinaccount,input)
+	local r,errorcode,uid,playerdata,lastdeviceid  = pcall(dologinaccount,input)
 	loginflags[userkey] = nil
-	return errorcode,uid,playerdata
+	return errorcode,uid,playerdata,lastdeviceid
 end
 --used
 --客户端断开链接时
@@ -118,10 +118,9 @@ function lostclient(uid,input)
 
 		user:ondisconnect()
 		user.playerdata = input
-	else
-		--save to db
-		skynet.call(db,"lua","saveplayer",uid,input)
 	end
+		--save to db
+	skynet.call(db,"lua","saveplayer",uid,input)
 end
 
 

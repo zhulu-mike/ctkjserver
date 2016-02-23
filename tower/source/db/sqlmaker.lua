@@ -216,26 +216,28 @@ function sqlinsert(tbl,dat)
     local tblschema = tbl.schema
     local fields = tblschema.fields
     local defaults = tblschema.defaults
-
+    local sqldata = {}
     for field,fi in pairs(fields) do
         if not dat[field] then
             if defaults[field] then
-                dat[field] = defaults[field]
+                sqldata[field] = defaults[field]
             elseif fi == "date" then
-                dat[field] = os.time()
+                sqldata[field] = os.time()
             elseif fi == "string" then
-                dat[field] = ""
+                sqldata[field] = ""
             else
-                dat[field] = 0
+                sqldata[field] = 0
             end
+        else
+            sqldata[field] = dat[field]
         end
-    end
+    end                                                                                                                 
 
     local sql = tbl.insert
     local values = {}
 
     for field,_ in pairs(fields) do
-        table.insert(values,dat[field])
+        table.insert(values,sqldata[field])
     end
 
     sql = string.format(sql,table.unpack(values))

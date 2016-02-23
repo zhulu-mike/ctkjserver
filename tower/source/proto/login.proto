@@ -10,7 +10,11 @@ message auth
     optional int32  serverid	= 2;	 //服务器编号
     optional int32  platformid	= 3;	 //ID
     optional string deviceid	= 4;	 //设备标识ID
-    optional int32  version	= 6;		 //客户端版本
+    optional int32  resversion	= 5;		 //资源数据版本
+    optional int32  herosversion	= 6;		 //英雄版本
+    optional string  chaptersversion	= 7;		 //章节版本,格式为：章节ID，版本号;章节ID，版本号
+    optional int32  prbversion	= 8;		 //进度数据版本
+    optional int32  storeversion	= 9;		 //商店数据版本
 }
 
 message auth_resp
@@ -18,7 +22,11 @@ message auth_resp
     optional int32 error = 1;	      //错误码
     optional string userid = 2;             //角色id
     optional int32 systime = 3;         //系统时间
-    optional int32 version = 4;         //当前版本
+    optional int32  resupdate	= 4;		 //资源数据同步控制，1表示前端数据较新，需要同步给服务端
+    optional int32  heroupdate	= 5;		 //英雄数据同步控制，同上
+    optional string  chapterupdate	= 6;		 //章节数据同步控制，同上，格式为：章节ID,章节ID,章节ID
+    optional int32  prbupdate	= 7;		 //进度数据同步控制，同上
+    optional int32  storeupdate	= 8;		 //商店数据同步控制，同上
 }
 
 

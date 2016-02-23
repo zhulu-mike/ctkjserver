@@ -1,5 +1,6 @@
 ------------client manager
 local skynet = require "skynet"
+require("json")
 
 --一个用户的数据结构
 cclient = class("cclient")
@@ -99,9 +100,9 @@ function cclient:ondisconnect()
 		local data = self:buildalldata()
 		--把数据存储到world模块
 		if data then
-			trace("user " .. self.data.detail.userid .. "closed")
-			self:resetdatastate()
+			trace("user " .. self.data.detail.userid .. " ondisconnect, sync data to world:" .. json.encode(data))
 			skynet.call(world,"lua","lostclient",self.uid,data)
+			self:resetdatastate()
 		end
 	end
 end
@@ -172,8 +173,9 @@ function cclient:onnewday(dayid)
 end
 --同步数据到db
 function cclient:syncdata(data)
+	local resp = skynet.send(db,"lua","saveplayer",self.uid,data)
 	self:resetdatastate()
-	return skynet.send(db,"lua","saveplayer",self.uid,data)
+	return resp
 end
 
 function cclient:update(delta)
@@ -189,6 +191,7 @@ function cclient:update(delta)
 				return
 			end
 			self.savetimer = 0
+			trace("sync data to redis, uid is :" .. self.uid .. ",data is :" .. json.encode(data))
 			local ok = self:syncdata(data)
 			if not ok then
 				skynet.call(dog,"lua","close",self.fd)

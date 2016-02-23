@@ -64,7 +64,7 @@ function loadplayer(id)
 
 	return r
 end
---保存玩家的数据
+--保存玩家的数据到redis
 function saveplayer(uid,data)
 	if not data or not uid then
 		return NONE
@@ -72,45 +72,32 @@ function saveplayer(uid,data)
 	--如果玩家数据的版本号变化了，就同步
 	local d = data.detail
 	if d and d.version > d.lastversion then
-		redisupdate(redis_usedetail,d.userid,d)
+		redis_addsqlsavelist(d.userid)
+		redisupdate(redis_userdetail,d.userid,d,REDIS_PLAYER_TTL)
 	end
 
 	d = data.heros
 	if d and d.version > d.lastversion then
-		redisupdate(redis_usedheros,d.userid,d)
+		redis_addsqlsavelist(d.userid)
+		redisupdate(redis_userheros,d.userid,d,REDIS_PLAYER_TTL)
 	end
 
 	d = data.rds
 	if d and d.version > d.lastversion then
-		redisupdate(redis_usedrounds,d.userid,d)
+		redis_addsqlsavelist(d.userid)
+		redisupdate(redis_userrounds,d.userid,d,REDIS_PLAYER_TTL)
 	end
 
 	d = data.timeinfo
 	if d and d.version > d.lastversion then
-		redisupdate(redis_usedtime,d.userid,d)
+		redis_addsqlsavelist(d.userid)
+		redisupdate(redis_usertime,d.userid,d,REDIS_PLAYER_TTL)
 	end
 
 	return NONE
 end
 
-function newplayer(data)
-	local roleid = rcmd("incr","maxplayerid")
-	data.id = roleid
-	datapool.newplayer(data)
 
-	local playerdata = {}
-	playerdata.roleid = roleid
-	playerdata.role = data
-
-	--init detail status
-	local fields = redis_role_detail.fields
-
-	for _,field in ipairs(fields) do
-		playerdata[field] = {}
-	end
-
-	return playerdata
-end
 --used
 --创建一个账户
 --@param userid 账户的唯一ID
@@ -146,45 +133,13 @@ function savemail(mail)
 	datapool.savemail(mail)
 	return NONE
 end
-
+--used
+--定时保存在线人数日志
 function saveserverlog(onlinecount)
-	local sql = string.format("INSERT INTO tbl_server_log(rtime,onlinecount) VALUES(FROM_UNIXTIME(%d),%d)",
-		os.time(),onlinecount)
-
-	skynet.send(dbpool,"lua","execute",sql)
+	datapool.saveserverlog(onlinecount)
 	return NONE
 end
 
-function onloginrole(roleid)
-	local loginseq = rcmd("incr","logintimes")
-
-	if not loginseq then
-		loginseq = 0
-	end
-	
-	redis_addloginrole(roleid,loginseq)
-	return NONE
-end
-
-function getloginroles(count)
-	local tr = redis_getloginroles(count)
-
-	if not tr then
-		return
-	end
-
-	local r = {}
-
-	for i,v in ipairs(tr) do
-		local role = datapool.getrole(tonumber(v))
-
-		if role then
-			table.insert(r,role)
-		end
-	end
-
-	return r
-end
 
 function getroles(roleids)
 	local r = {}
@@ -208,40 +163,6 @@ function getroles(roleids)
 	return r
 end
 
-function getrolesinlevel(roleids,level)
-	local r = {}
-
-	for _,roleid in ipairs(roleids) do
-		local score = redis_getlevelscore(roleid,level)
-
-		if score > 0 then
-			local role = datapool.getrole(roleid)
-
-			if role then
-				table.insert(r,
-				{
-					friend =
-					{
-						roleid = role.id,
-						rolename = role.rolename,
-						currentFace = role.currentFace,
-						passMax = role.maxpass,
-						point = role.point,
-						towerMax = role.maxtower
-					},
-
-					point = score
-				})
-			end
-		end
-	end
-
-	return r
-end
-
-function getexchangecode(code)
-	return redis_getexchangecode(code)
-end
 
 function getranktime(ranktype)
 	local key = "ranktime:" .. ranktype

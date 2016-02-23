@@ -15,6 +15,12 @@ MSG[206]	= {proto = "sync.heros_resp"}
 MSG[109]	= {proto = "sync.rounds"}		--同步rounds数据，即tbl_userrounds表
 MSG[209]	= {proto = "sync.rounds_resp"}	
 
+--资源数据同步
+MSG[250]	= {proto = "sync.resupdate"}	
+--英雄数据同步
+MSG[251]	= {proto = "sync.herosupdate"}
+--章节数据同步
+MSG[252]	= {proto = "sync.chapterupdate"}
 
 --启用消息
 function enablemsg(id,enabled)

@@ -1,15 +1,26 @@
 
-È
-login.protologin"d
+û
+login.protologin"À
 auth
 bindaccount (	
 serverid (
 
 platformid (
-deviceid (	
-version ("L
+deviceid (	
+
+resversion (
+herosversion (
+chaptersversion (	
+
+prbversion (
+storeversion	 ("¡
 	auth_resp
 error (
 userid (	
-systime (
-version (
+systime (
+	resupdate (
+
+heroupdate (
+chapterupdate (	
+	prbupdate (
+storeupdate (

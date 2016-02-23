@@ -73,26 +73,31 @@ function createuser(input)
 
 	local data = {}
 	--插入到mysql
-	sqlinsert(tbl_user,input);
+	sqlinsert(tbl_user,input)
 	--插入到redis
-	data.user = redis_adduser(input);
+	data.user = redis_adduser(input)
 	local playerdata = {}
 
 	local detail = {userid=input.id, nickname=""}
-	sqlinsert(tbl_userdetail,detail);
+	--trace(json.encode(detail))
+	sqlinsert(tbl_userdetail,detail)
 	playerdata.detail = redisinsert(redis_userdetail,detail.userid,detail)
+	playerdata.detail.lastversion = playerdata.detail.version
 
 	local usertime = {userid=input.id, energytime=0}
-	sqlinsert(tbl_usertime,usertime);
+	sqlinsert(tbl_usertime,usertime)
 	playerdata.timeinfo = redisinsert(redis_usertime,usertime.userid,usertime)
+	playerdata.timeinfo.lastversion = playerdata.timeinfo.version
 
 	local heros = {userid=input.id, heros=""}
-	sqlinsert(tbl_userheros,heros);
+	sqlinsert(tbl_userheros,heros)
 	playerdata.heros = redisinsert(redis_userheros,heros.userid,heros)
+	playerdata.heros.lastversion = playerdata.heros.version
 
 	local rds = {userid=input.id, rounds=""}
-	sqlinsert(tbl_userrounds,rds);
+	sqlinsert(tbl_userrounds,rds)
 	playerdata.rds = redisinsert(redis_userrounds,rds.userid,rds)
+	playerdata.rds.lastversion = playerdata.rds.version
 
 	--继续插入表，如果需要
 	data.playerdata = playerdata

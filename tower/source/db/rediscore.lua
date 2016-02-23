@@ -47,7 +47,7 @@ function convertfields(fieldtypes,data)
     end
 end
 
-function redisquery(tbl,id)
+function redisquery(tbl,id,ttl)
     local fields = tbl.fields
     local key = makerediskey(tbl.name, id)
     -- local r = urcmd(id,"hmget",key,table.unpack(fields))
@@ -56,7 +56,9 @@ function redisquery(tbl,id)
     if table.empty(r) then
         return
     end
-
+    if ttl and ttl > 0 then
+        urcmd(id,"expire",key,ttl)
+    end
     return make_pairs_table(r,fields)
 end
 
@@ -112,15 +114,17 @@ function redisinsert(tbl,id,dat,ttl)
 
         if v then
             tdat[field] = v
+            --trace("field ".. field .. " value is " .. v)
         elseif defaults[field] then
             tdat[field] = defaults[field]
+            --trace("field ".. field .. " type is " .. type(defaults[field]))
             --有默认值就设置默认值
         end
     end
 
     urcmd(id,"hmset",key,tdat)
 
-    if ttl then
+    if ttl and ttl > 0 then
         urcmd(id,"expire",key,ttl)
     end
 
