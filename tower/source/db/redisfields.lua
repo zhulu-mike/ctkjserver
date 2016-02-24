@@ -50,6 +50,26 @@ redis_usertime =
 	--建立的索引
 	index = {"userid"}
 }
+--商店
+redis_userstore = 
+{
+	name = "tbluserstore",
+	fields = {"userid","store","version"},
+	--默认值
+	defaults = {version=0},
+	--建立的索引
+	index = {"userid"}
+}
+--progress数据
+redis_userprogress = 
+{
+	name = "tbluserprogress",
+	fields = {"userid","chapter","gate","isPlayedAction","firstGateGuide","secondGateGuide","thirdGateGuide","after3rdGateGuide","eighthGateGuide","roleLayerGuide","firstChapterGuide","isRemindRole","version"},
+	--默认值
+	defaults = {version=0,chapter=1,gate=1,isPlayedAction=0,firstGateGuide=0,secondGateGuide=0,thirdGateGuide=0,after3rdGateGuide=0,eighthGateGuide=0,roleLayerGuide=0,firstChapterGuide=0,isRemindRole=0},
+	--建立的索引
+	index = {"userid"}
+}
 
 
 

@@ -1,5 +1,5 @@
 
-û
+›
 login.protologin"À
 auth
 bindaccount (	
@@ -23,4 +23,6 @@ prbversion (
 heroupdate (
 chapterupdate (	
 	prbupdate (
-storeupdate (
+storeupdate ("
+init_complete
+error (

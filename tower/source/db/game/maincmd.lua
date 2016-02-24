@@ -94,6 +94,18 @@ function saveplayer(uid,data)
 		redisupdate(redis_usertime,d.userid,d,REDIS_PLAYER_TTL)
 	end
 
+	d = data.store
+	if d and d.version > d.lastversion then
+		redis_addsqlsavelist(d.userid)
+		redisupdate(redis_userstore,d.userid,d,REDIS_PLAYER_TTL)
+	end
+
+	d = data.progress
+	if d and d.version > d.lastversion then
+		redis_addsqlsavelist(d.userid)
+		redisupdate(redis_userprogress,d.userid,d,REDIS_PLAYER_TTL)
+	end
+
 	return NONE
 end
 

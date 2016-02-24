@@ -29,4 +29,10 @@ message auth_resp
     optional int32  storeupdate	= 8;		 //商店数据同步控制，同上
 }
 
+//初始化完成通知102
+message init_complete
+{
+    optional int32 error = 1;//同步完成通知，始终为1
+}
+
 

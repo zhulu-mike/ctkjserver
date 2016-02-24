@@ -195,3 +195,58 @@ end
 function redis_adduserrounds( data )
     return redisinsert(redis_userrounds,data.userid,data,REDIS_PLAYER_TTL)
 end
+
+--used
+--获取userstore表的数据
+function redis_getuserstore(id)
+    local data = redisquery(redis_userstore,id,REDIS_PLAYER_TTL)
+
+    if not data then
+        return
+    end
+    convertfields(tbl_userstore.schema.fields,data)
+    return data
+end
+--把一条userrounds数据加载到redis中
+function redis_adduserstore( data )
+    return redisinsert(redis_userstore,data.userid,data,REDIS_PLAYER_TTL)
+end
+--used
+--获取userprogress表的数据
+function redis_getuserprogress(id)
+    local data = redisquery(redis_userprogress,id,REDIS_PLAYER_TTL)
+
+    if not data then
+        return
+    end
+    convertfields(tbl_userprogress.schema.fields,data)
+    return data
+end
+--把一条userprogress数据加载到redis中
+function redis_adduserprogress( data )
+    return redisinsert(redis_userprogress,data.userid,data,REDIS_PLAYER_TTL)
+end
+
+--used
+--获取某个表的数据
+--@param id 关键ID
+--@param redistablename 表在redisfields.lua中的别名
+--@param sqltblname 在sql中的表名
+function redis_getuserdata(id, redistablename, sqltblname)
+    local data = redisquery(redistablename,id,REDIS_PLAYER_TTL)
+
+    if not data then
+        return
+    end
+    convertfields(sqltblname.schema.fields,data)
+    return data
+end
+--把一条数据加载到redis中
+--@param id 关键ID
+--@param redistablename 表在redisfields.lua中的别名
+--@param data 数据
+function redis_adduserdata( data, id, redistablename )
+    return redisinsert(redistablename, id, data, REDIS_PLAYER_TTL)
+end
+
+

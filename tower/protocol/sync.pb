@@ -1,5 +1,5 @@
 
-ª
+·	
 
 sync.protosync"q
 res
@@ -26,8 +26,51 @@ sync.protosync"q
 version ("
 
 heros_resp
+ret ("7
+store
+userid (	
+store (	
+version ("
+
+store_resp
+ret ("¨
+progress
+userid (	
+chapter (
+gate (
+isPlayedAction (
+firstGateGuide (
+secondGateGuide (
+thirdGateGuide (
+after3rdGateGuide (
+eighthGateGuide	 (
+roleLayerGuide
+ (
+firstChapterGuide (
+isRemindRole (
+version ("
+progress_resp
 ret ("=
 herosupdate
 userid (	
 heros (	
-version (
+version ("=
+storeupdate
+userid (	
+store (	
+version ("®
+progressupdate
+userid (	
+chapter (
+gate (
+isPlayedAction (
+firstGateGuide (
+secondGateGuide (
+thirdGateGuide (
+after3rdGateGuide (
+eighthGateGuide	 (
+roleLayerGuide
+ (
+firstChapterGuide (
+isRemindRole (
+version (

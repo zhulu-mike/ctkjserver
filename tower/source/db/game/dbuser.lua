@@ -33,6 +33,8 @@ function loaduserbyname(account,serverid,qudaoid)
 		playerdata.heros = other.heros
 		playerdata.rds = other.rds
 		playerdata.timeinfo = other.timeinfo
+		playerdata.store = other.store
+		playerdata.progress = other.progress
 		data.playerdata = playerdata
 	end
 	return data
@@ -62,6 +64,8 @@ function loaduserbybindaccount(account,serverid,qudaoid)
 		playerdata.heros = other.heros
 		playerdata.rds = other.rds
 		playerdata.timeinfo = other.timeinfo
+		playerdata.store = other.store
+		playerdata.progress = other.progress
 		data.playerdata = playerdata
 	end
 	return data
@@ -99,6 +103,16 @@ function createuser(input)
 	playerdata.rds = redisinsert(redis_userrounds,rds.userid,rds)
 	playerdata.rds.lastversion = playerdata.rds.version
 
+	local store = {userid=input.id, store=""}
+	sqlinsert(tbl_userstore,store)
+	playerdata.store = redisinsert(redis_userstore,store.userid,store)
+	playerdata.store.lastversion = playerdata.store.version
+
+	local progress = {userid=input.id}
+	sqlinsert(tbl_userprogress,progress)
+	playerdata.progress = redisinsert(redis_userprogress,progress.userid,progress)
+	playerdata.progress.lastversion = playerdata.progress.version
+
 	--继续插入表，如果需要
 	data.playerdata = playerdata
 	return data
@@ -124,6 +138,8 @@ function loaduser(id)
 	playerdata.timeinfo = other.timeinfo
 	playerdata.heros = other.heros
 	playerdata.rds = other.rds
+	playerdata.store = other.store
+	playerdata.progress = other.progress
 	data.playerdata = playerdata
 	--get new mails，获取邮件数据
 	-- local nmails = redis_fetchnewmails(id)
@@ -152,6 +168,14 @@ function loaduserother(id)
 	data = loaduserrounds(id,true)
 	data.lastversion = data.version
 	ret.rds = data
+	--商店数据
+	data = loaduserstore(id,true)
+	data.lastversion = data.version
+	ret.store = data
+	--progress数据
+	data = loaduserprogress(id,true)
+	data.lastversion = data.version
+	ret.progress = data
 	--get new mails，获取邮件数据
 	-- local nmails = redis_fetchnewmails(id)
 	-- table.merge(r.mails,nmails)
@@ -230,4 +254,54 @@ function loaduserrounds(id, autords)
 	end
 	local data = sqlfetchone(tbl_userrounds,id)
 	return redis_adduserrounds(data);
+end
+--used
+--载入玩家商店数据
+--@param id 玩家的userid
+--@param autords bool 从sql中读取数据后是否自动添加到redis中
+function loaduserstore(id, autords)
+	--先尝试从redis中读取detail数据
+	local r = redis_getuserstore(id)
+
+	if r then
+		return r
+	end
+	--从mysql中读取userdetail数据
+	if (LOG_LEVEL > 0) then
+		trace("load userstore from sql ",id)
+	end
+	local data = sqlfetchone(tbl_userstore,id)
+	--如果没有，就插入一条
+	if not data then
+		trace("create user store sql " .. id)
+		local store = {userid=id, store=""}
+		sqlinsert(tbl_userstore,store)
+		return redisinsert(redis_userstore,store.userid,store)
+	end
+	return redis_adduserstore(data);
+end
+--used
+--载入玩家进度数据
+--@param id 玩家的userid
+--@param autords bool 从sql中读取数据后是否自动添加到redis中
+function loaduserprogress(id, autords)
+	--先尝试从redis中读取detail数据
+	local r = redis_getuserdata(id, redis_userprogress, tbl_userprogress)
+
+	if r then
+		return r
+	end
+	--从mysql中读取userprogress数据
+	if (LOG_LEVEL > 0) then
+		trace("load userprogress from sql ",id)
+	end
+	local data = sqlfetchone(tbl_userprogress,id)
+	--如果没有，就插入一条
+	if not data then
+		trace("create user progress sql " .. id)
+		local progress = {userid=id, chapter=1, gate=1}
+		sqlinsert(tbl_userprogress,progress)
+		return redisinsert(redis_userprogress,progress.userid,progress)
+	end
+	return redis_adduserdata(data, data.userid, redis_userprogress)
 end

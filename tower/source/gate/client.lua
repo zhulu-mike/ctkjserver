@@ -9,7 +9,9 @@ data{
 	detail:{},
 	heros:{},
 	rds:{},
-	timeinfo:{}
+	timeinfo:{},
+	store:{},
+	progress:{}
 }
 ]]--
 
@@ -145,6 +147,14 @@ function cclient:builddata()
 		flag = true
 		playerdata.timeinfo = data.timeinfo
 	end
+	if data.store.invalid then
+		flag = true
+		playerdata.store = data.store
+	end
+	if data.progress.invalid then
+		flag = true
+		playerdata.progress = data.progress
+	end
 	if flag then
 		return playerdata
 	else
@@ -161,6 +171,10 @@ function cclient:resetdatastate( )
 	self.data.rds.lastversion = self.data.rds.version
 	self.data.timeinfo.invalid = false
 	self.data.timeinfo.lastversion = self.data.timeinfo.version
+	self.data.store.invalid = false
+	self.data.store.lastversion = self.data.store.version
+	self.data.progress.invalid = false
+	self.data.progress.lastversion = self.data.progress.version
 end
 --每天凌晨初始化数据
 function cclient:resetdayrecord(dayid)

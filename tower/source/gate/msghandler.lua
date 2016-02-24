@@ -72,6 +72,8 @@ MSG[100].on = function(client,input)
 	-- trace("_" .. input.deviceid)
 	local needsenddetail = false
 	local needsendheros = false
+	local needsendstore = false
+	local needsendprogress = false
 	if update or playerdata.detail.version > resversion then
 		needsenddetail = true
 	elseif (playerdata.detail.version < resversion) then
@@ -81,6 +83,16 @@ MSG[100].on = function(client,input)
 		needsendheros = true
 	elseif (playerdata.heros.version < herosversion) then
 		respdata.heroupdate = 1
+	end
+	if update or playerdata.store.version > storeversion then
+		needsendstore = true
+	elseif (playerdata.store.version < storeversion) then
+		respdata.storeupdate = 1
+	end
+	if update or playerdata.progress.version > prbversion then
+		needsendprogress = true
+	elseif (playerdata.progress.version < prbversion) then
+		respdata.prbupdate = 1
 	end
 	client:send(200,respdata)
 	if needsenddetail then
@@ -95,6 +107,14 @@ MSG[100].on = function(client,input)
 			}
 		)
 	end
+	if needsendstore then
+		client:send(253,{
+			userid = playerdata.detail.userid,
+			store = playerdata.store.store,
+			version = playerdata.store.version
+			}
+		)
+	end
 	if needsendheros then
 		client:send(251,{
 			userid = playerdata.detail.userid,
@@ -103,6 +123,29 @@ MSG[100].on = function(client,input)
 			}
 		)
 	end
+	if needsendprogress then
+		local userphb = playerdata.progress
+		client:send(254,{
+			userid = playerdata.detail.userid,
+			chapter = userphb.chapter,
+			gate = userphb.gate,
+			isPlayedAction = userphb.isPlayedAction,
+			firstGateGuide = userphb.firstGateGuide,
+			secondGateGuide = userphb.secondGateGuide,
+			thirdGateGuide = userphb.thirdGateGuide,
+			after3rdGateGuide = userphb.after3rdGateGuide,
+			eighthGateGuide = userphb.eighthGateGuide,
+			roleLayerGuide = userphb.roleLayerGuide,
+			firstChapterGuide = userphb.firstChapterGuide,
+			isRemindRole = userphb.isRemindRole,
+			version = userphb.version
+			}
+		)
+	end
+	client:send(102,{
+			error = 1
+		}
+	)
 	client.loging = false
 end
 
@@ -165,6 +208,55 @@ MSG[109].on = function(client,input)
 	data.version = input.version
 	data.invalid = true
 	client:send(209,
+	{
+		ret = EXCUTE_SUCCESS
+	})
+end
+
+--同步store关卡数据
+MSG[112].on = function(client,input)
+
+	if input.version <= client.data.store.version then
+		client:send(212,
+		{
+			ret = SYN_VERSIONERROR
+		})
+		return
+	end
+	local data = client.data.store
+	data.store = input.store
+	data.version = input.version
+	data.invalid = true
+	client:send(212,
+	{
+		ret = EXCUTE_SUCCESS
+	})
+end
+--同步progress关卡数据
+MSG[115].on = function(client,input)
+
+	if input.version <= client.data.progress.version then
+		client:send(215,
+		{
+			ret = SYN_VERSIONERROR
+		})
+		return
+	end
+	local data = client.data.progress
+	data.chapter = input.chapter
+	data.gate = input.gate
+	data.isPlayedAction = input.isPlayedAction
+	data.firstGateGuide = input.firstGateGuide
+	data.secondGateGuide = input.secondGateGuide
+	data.thirdGateGuide = input.thirdGateGuide
+	data.after3rdGateGuide = input.after3rdGateGuide
+	data.eighthGateGuide = input.eighthGateGuide
+	data.roleLayerGuide = input.roleLayerGuide
+	data.firstChapterGuide = input.firstChapterGuide
+	data.isRemindRole = input.isRemindRole
+	data.version = input.version
+	data.invalid = true
+	client:send(215,
 	{
 		ret = EXCUTE_SUCCESS
 	})
