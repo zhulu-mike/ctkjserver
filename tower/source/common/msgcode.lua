@@ -14,14 +14,15 @@ MSG[203]	= {proto = "sync.res_resp"}
 MSG[106]	= {proto = "sync.heros"}		--同步heros数据，即tbl_userheros表
 MSG[206]	= {proto = "sync.heros_resp"}	
 
-MSG[109]	= {proto = "sync.rounds"}		--同步rounds数据，即tbl_userrounds表
-MSG[209]	= {proto = "sync.rounds_resp"}	
 
 MSG[112]	= {proto = "sync.store"}		--同步store数据，即tbl_userstore表
 MSG[212]	= {proto = "sync.store_resp"}	
 
 MSG[115]	= {proto = "sync.progress"}		--同步progress数据，即tbl_userprogress表
 MSG[215]	= {proto = "sync.progress_resp"}	
+
+MSG[118]	= {proto = "sync.chapter"}		--同步progress数据，即tbl_userprogress表
+MSG[218]	= {proto = "sync.chapter_resp"}
 
 --资源数据同步
 MSG[250]	= {proto = "sync.resupdate"}	
@@ -34,6 +35,9 @@ MSG[253]	= {proto = "sync.storeupdate"}
 
 --progress数据同步
 MSG[254]	= {proto = "sync.progressupdate"}
+
+--章节关卡数据同步
+MSG[255]	= {proto = "sync.chapterupdate"}
 
 --启用消息
 function enablemsg(id,enabled)
