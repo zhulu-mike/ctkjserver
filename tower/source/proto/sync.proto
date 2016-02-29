@@ -85,6 +85,22 @@ message progress_resp
     optional int32 ret = 1;	      //错误码，1表示同步成功
 }
 
+//章节关卡数据同步:118
+message chapter
+{
+    optional string userid  = 1; //玩家唯一ID
+    optional int32  chapter  = 2;     //章节ID
+    optional string rds = 3; //关卡数据字符串
+    optional int32  version = 4;         //客户端资源数据版本
+}
+
+//218
+message chapter_resp
+{
+    optional int32 ret = 1;       //错误码，1表示同步成功
+    optional int32  chapter  = 2;     //章节ID
+}
+
 //发送英雄数据给客户端:251
 message herosupdate
 {
@@ -118,4 +134,15 @@ message progressupdate
 
     optional int32 isRemindRole = 12; //新角色解锁的提示,0未提示，1提示过
     optional int32  version	= 13;   //版本号
+}
+
+
+
+//发送章节关卡数据给客户端:255
+message chapterupdate
+{
+    optional string userid  = 1; //玩家唯一ID
+    optional int32 chapter = 2; //章节ID
+    optional string rds = 3;//关卡数据字符串
+    optional int32  version = 4;   //版本号
 }

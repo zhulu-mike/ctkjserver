@@ -1,5 +1,6 @@
 
-·	
+ÿ
+
 
 sync.protosync"q
 res
@@ -50,7 +51,15 @@ store_resp
 isRemindRole (
 version ("
 progress_resp
-ret ("=
+ret ("H
+chapter
+userid (	
+chapter (
+rds (	
+version (",
+chapter_resp
+ret (
+chapter ("=
 herosupdate
 userid (	
 heros (	
@@ -73,4 +82,9 @@ store_resp
  (
 firstChapterGuide (
 isRemindRole (
-version (
+version ("N
+chapterupdate
+userid (	
+chapter (
+rds (	
+version (

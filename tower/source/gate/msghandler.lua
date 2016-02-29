@@ -64,6 +64,9 @@ MSG[100].on = function(client,input)
 	local chaptersversion = input.chaptersversion
 	local prbversion = input.prbversion
 	local storeversion = input.storeversion
+
+
+
 	local update = false
 	if lastdeviceid and lastdeviceid ~= "" and lastdeviceid ~= input.deviceid then
 		update = true
@@ -94,6 +97,31 @@ MSG[100].on = function(client,input)
 	elseif (playerdata.progress.version < prbversion) then
 		respdata.prbupdate = 1
 	end
+
+	local needsyncchapter = {}
+	local rounds = playerdata.rds.rounds
+	trace(json.encode(playerdata.rds))
+	local rdsupdate = ""
+	if chaptersversion ~= "" then
+		local chaptersversions = string.split(chaptersversion, ";")
+		local cs = {}
+		local temp = nil
+		for i,v in ipairs(chaptersversions) do
+			temp = string.split(v,",")
+			temp[1] = tonumber(temp[1])
+			if update or (rounds[temp[1]] ~= nil and tonumber(rounds[temp[1]].version) > tonumber(temp[2])) then
+				table.insert(needsyncchapter, temp[1])
+			elseif rounds[temp[1]] == nil or tonumber(rounds[temp[1]].version) < tonumber(temp[2]) then
+				rdsupdate = rdsupdate .. temp[1] .. ","
+				trace(temp[1])
+			end
+		end
+		if rdsupdate ~= "" then
+			rdsupdate = string.sub(rdsupdate, 1, -2)
+		end
+	end
+	respdata.chapterupdate = rdsupdate
+
 	client:send(200,respdata)
 	if needsenddetail then
 		client:send(250,{
@@ -123,6 +151,7 @@ MSG[100].on = function(client,input)
 			}
 		)
 	end
+	
 	if needsendprogress then
 		local userphb = playerdata.progress
 		client:send(254,{
@@ -142,6 +171,16 @@ MSG[100].on = function(client,input)
 			}
 		)
 	end
+
+	for i,v in ipairs(needsyncchapter) do
+		client:send(255,{
+			userid = playerdata.detail.userid,
+			chapter = v,
+			rds = json.encode(rounds[v].data),
+			version = rounds[v].version
+		})
+	end
+
 	client:send(102,{
 			error = 1
 		}
@@ -193,25 +232,7 @@ MSG[106].on = function(client,input)
 		ret = EXCUTE_SUCCESS
 	})
 end
---同步rounds关卡数据
-MSG[109].on = function(client,input)
 
-	if input.version <= client.data.rds.version then
-		client:send(209,
-		{
-			ret = SYN_VERSIONERROR
-		})
-		return
-	end
-	local data = client.data.rds
-	data.rounds = input.rounds
-	data.version = input.version
-	data.invalid = true
-	client:send(209,
-	{
-		ret = EXCUTE_SUCCESS
-	})
-end
 
 --同步store关卡数据
 MSG[112].on = function(client,input)
@@ -232,7 +253,7 @@ MSG[112].on = function(client,input)
 		ret = EXCUTE_SUCCESS
 	})
 end
---同步progress关卡数据
+--同步progress数据
 MSG[115].on = function(client,input)
 
 	if input.version <= client.data.progress.version then
@@ -261,6 +282,36 @@ MSG[115].on = function(client,input)
 		ret = EXCUTE_SUCCESS
 	})
 end
+
+--同步章节关卡数据
+MSG[118].on = function(client,input)
+	local chapter = tonumber(input.chapter)
+	local serverdata = client.data.rds.rounds[chapter]
+	if serverdata ~= nil and input.version <= tonumber(serverdata.version) then
+		client:send(218,
+		{
+			ret = SYN_VERSIONERROR
+		})
+		return
+	end
+	if serverdata == nil then
+		serverdata = {}
+		client.data.rds.rounds[chapter] = serverdata
+	end
+	local data = client.data.rds
+	serverdata.data = input.rds
+	serverdata.version = input.version
+	data.version = data.version+1
+	data.invalid = true
+	client:send(218,
+	{
+		ret = EXCUTE_SUCCESS,
+		chapter = chapter
+	})
+end
+
+
+
 
 
 

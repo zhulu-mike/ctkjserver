@@ -52,20 +52,20 @@ function saveplayertosql()
 		return
 	end
 	trace("save user to sql:",userid)
-	local data = redis_getuserdetail(userid)
+	local data = redis_getuserdata(userid, redis_userdetail, tbl_userdetail)
 	sqlupdate(tbl_userdetail,data)
 
-	data = redis_getusertime(userid)
+	data = redis_getuserdata(userid, redis_usertime, tbl_usertime)
 	sqlupdate(tbl_usertime,data)
 
-	data = redis_getuserheros(userid)
+	data = redis_getuserdata(userid, redis_userheros, tbl_userheros)
 	-- trace(data.heros)
 	sqlupdate(tbl_userheros,data)
 
-	data = redis_getuserrounds(userid)
+	data = redis_getuserdata(userid, redis_userrounds, tbl_userrounds)
 	sqlupdate(tbl_userrounds,data)
 
-	data = redis_getuserstore(userid)
+	data = redis_getuserdata(userid, redis_userstore, tbl_userstore)
 	sqlupdate(tbl_userstore,data)
 
 	data = redis_getuserdata(userid, redis_userprogress, tbl_userprogress)

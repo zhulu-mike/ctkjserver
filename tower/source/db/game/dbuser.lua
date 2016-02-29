@@ -188,7 +188,7 @@ end
 --@param autords bool 从sql中读取数据后是否自动添加到redis中
 function loaduserdetail(id, autords)
 	--先尝试从redis中读取detail数据
-	local r = redis_getuserdetail(id)
+	local r = redis_getuserdata(id,redis_userdetail,tbl_userdetail)
 
 	if r then
 		return r
@@ -198,7 +198,7 @@ function loaduserdetail(id, autords)
 		trace("load userdetail from sql ",id)
 	end
 	local detail = sqlfetchone(tbl_userdetail,id)
-	return redis_adduserdetail(detail);
+	return redis_adduserdata(detail, detail.userid, redis_userdetail);
 end
 --used
 --载入玩家数据
@@ -206,7 +206,7 @@ end
 --@param autords bool 从sql中读取数据后是否自动添加到redis中
 function loadusertime(id, autords)
 	--先尝试从redis中读取detail数据
-	local r = redis_getusertime(id)
+	local r = redis_getuserdata(id,redis_usertime , tbl_usertime)
 
 	if r then
 		return r
@@ -216,7 +216,7 @@ function loadusertime(id, autords)
 		trace("load usertime from sql ",id)
 	end
 	local data = sqlfetchone(tbl_usertime,id)
-	return redis_addusertime(data);
+	return redis_adduserdata(data, data.userid, redis_usertime);
 end
 --used
 --载入玩家数据
@@ -224,7 +224,7 @@ end
 --@param autords bool 从sql中读取数据后是否自动添加到redis中
 function loaduserheros(id, autords)
 	--先尝试从redis中读取detail数据
-	local r = redis_getuserheros(id)
+	local r = redis_getuserdata(id, redis_userheros, tbl_userheros)
 
 	if r then
 		return r
@@ -234,7 +234,7 @@ function loaduserheros(id, autords)
 		trace("load userheros from sql ",id)
 	end
 	local data = sqlfetchone(tbl_userheros,id)
-	return redis_adduserheros(data);
+	return redis_adduserdata(data, data.userid, redis_userheros);
 end
 
 --used
@@ -243,9 +243,14 @@ end
 --@param autords bool 从sql中读取数据后是否自动添加到redis中
 function loaduserrounds(id, autords)
 	--先尝试从redis中读取detail数据
-	local r = redis_getuserrounds(id)
+	local r = redis_getuserdata(id,redis_userrounds, tbl_userrounds)
 
 	if r then
+		if r.rounds == "" then
+			r.rounds = {}
+		else
+			r.rounds = json.decode(r.rounds)
+		end
 		return r
 	end
 	--从mysql中读取userdetail数据
@@ -253,7 +258,13 @@ function loaduserrounds(id, autords)
 		trace("load userrounds from sql ",id)
 	end
 	local data = sqlfetchone(tbl_userrounds,id)
-	return redis_adduserrounds(data);
+	data = redis_adduserdata(data, data.userid, redis_userrounds)
+	if data.rounds == "" then
+		data.rounds = {}
+	else
+		data.rounds = json.decode(data.rounds)
+	end
+	return data
 end
 --used
 --载入玩家商店数据
@@ -261,7 +272,7 @@ end
 --@param autords bool 从sql中读取数据后是否自动添加到redis中
 function loaduserstore(id, autords)
 	--先尝试从redis中读取detail数据
-	local r = redis_getuserstore(id)
+	local r = redis_getuserdata(id, redis_userstore, tbl_userstore)
 
 	if r then
 		return r
@@ -278,7 +289,7 @@ function loaduserstore(id, autords)
 		sqlinsert(tbl_userstore,store)
 		return redisinsert(redis_userstore,store.userid,store)
 	end
-	return redis_adduserstore(data);
+	return redis_adduserdata(data, data.userid, redis_userstore);
 end
 --used
 --载入玩家进度数据

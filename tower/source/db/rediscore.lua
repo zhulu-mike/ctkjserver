@@ -120,6 +120,9 @@ function redisinsert(tbl,id,dat,ttl)
             --trace("field ".. field .. " type is " .. type(defaults[field]))
             --有默认值就设置默认值
         end
+        if type(tdat[field]) == "table" then
+            tdat[field] = json.encode(tdat[field])
+        end
     end
 
     urcmd(id,"hmset",key,tdat)
@@ -164,6 +167,9 @@ function redisupdate(tbl,id,dat,ttl)
         elseif defaults[field] then
             tdat[field] = defaults[field]
             --有默认值就设置默认值
+        end
+        if type(tdat[field]) == "table" then
+            tdat[field] = json.encode(tdat[field])
         end
     end
 
