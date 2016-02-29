@@ -71,6 +71,9 @@ function saveplayertosql()
 	data = redis_getuserdata(userid, redis_userprogress, tbl_userprogress)
 	sqlupdate(tbl_userprogress,data)
 
+	data = redis_getuserdata(userid, redis_usersign, tbl_usersign)
+	sqlupdate(tbl_usersign,data)
+
 	data = redis_loaduser(userid)
 	sqlupdate(tbl_user,data)
 

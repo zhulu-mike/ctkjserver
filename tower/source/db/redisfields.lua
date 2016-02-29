@@ -64,9 +64,20 @@ redis_userstore =
 redis_userprogress = 
 {
 	name = "tbluserprogress",
-	fields = {"userid","chapter","gate","isPlayedAction","firstGateGuide","secondGateGuide","thirdGateGuide","after3rdGateGuide","eighthGateGuide","roleLayerGuide","firstChapterGuide","isRemindRole","version"},
+	fields = {"userid","chapter","gate","isPlayedAction","firstGateGuide","secondGateGuide","thirdGateGuide","after3rdGateGuide","eighthGateGuide","roleLayerGuide","firstChapterGuide","isRemindRole","firstCharge","version"},
 	--默认值
-	defaults = {version=0,chapter=1,gate=1,isPlayedAction=0,firstGateGuide=0,secondGateGuide=0,thirdGateGuide=0,after3rdGateGuide=0,eighthGateGuide=0,roleLayerGuide=0,firstChapterGuide=0,isRemindRole=0},
+	defaults = {version=0,chapter=1,gate=1,isPlayedAction=0,firstGateGuide=0,secondGateGuide=0,thirdGateGuide=0,after3rdGateGuide=0,eighthGateGuide=0,roleLayerGuide=0,firstChapterGuide=0,isRemindRole=0, firstCharge=0},
+	--建立的索引
+	index = {"userid"}
+}
+
+--签到
+redis_usersign = 
+{
+	name = "tblusersign",
+	fields = {"userid","sign","version","opentime"},
+	--默认值
+	defaults = {version=0,opentime=0},
 	--建立的索引
 	index = {"userid"}
 }

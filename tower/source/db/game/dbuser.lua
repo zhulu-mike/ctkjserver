@@ -35,6 +35,7 @@ function loaduserbyname(account,serverid,qudaoid)
 		playerdata.timeinfo = other.timeinfo
 		playerdata.store = other.store
 		playerdata.progress = other.progress
+		playerdata.sign = other.sign
 		data.playerdata = playerdata
 	end
 	return data
@@ -66,6 +67,7 @@ function loaduserbybindaccount(account,serverid,qudaoid)
 		playerdata.timeinfo = other.timeinfo
 		playerdata.store = other.store
 		playerdata.progress = other.progress
+		playerdata.sign = other.sign
 		data.playerdata = playerdata
 	end
 	return data
@@ -113,6 +115,11 @@ function createuser(input)
 	playerdata.progress = redisinsert(redis_userprogress,progress.userid,progress)
 	playerdata.progress.lastversion = playerdata.progress.version
 
+	local sign = {userid=input.id, sign=""}
+	sqlinsert(tbl_usersign,sign)
+	playerdata.sign = redisinsert(redis_usersign,sign.userid,sign)
+	playerdata.sign.lastversion = playerdata.sign.version
+
 	--继续插入表，如果需要
 	data.playerdata = playerdata
 	return data
@@ -140,6 +147,7 @@ function loaduser(id)
 	playerdata.rds = other.rds
 	playerdata.store = other.store
 	playerdata.progress = other.progress
+	playerdata.sign = other.sign
 	data.playerdata = playerdata
 	--get new mails，获取邮件数据
 	-- local nmails = redis_fetchnewmails(id)
@@ -176,6 +184,10 @@ function loaduserother(id)
 	data = loaduserprogress(id,true)
 	data.lastversion = data.version
 	ret.progress = data
+	--sign数据
+	data = loadusersign(id,true)
+	data.lastversion = data.version
+	ret.sign = data
 	--get new mails，获取邮件数据
 	-- local nmails = redis_fetchnewmails(id)
 	-- table.merge(r.mails,nmails)
@@ -315,4 +327,31 @@ function loaduserprogress(id, autords)
 		return redisinsert(redis_userprogress,progress.userid,progress)
 	end
 	return redis_adduserdata(data, data.userid, redis_userprogress)
+end
+
+
+--used
+--载入玩家签到数据
+--@param id 玩家的userid
+--@param autords bool 从sql中读取数据后是否自动添加到redis中
+function loadusersign(id, autords)
+	--先尝试从redis中读取detail数据
+	local r = redis_getuserdata(id, redis_usersign, tbl_usersign)
+
+	if r then
+		return r
+	end
+	--从mysql中读取usersign数据
+	if (LOG_LEVEL > 0) then
+		trace("load usersign from sql ",id)
+	end
+	local data = sqlfetchone(tbl_usersign,id)
+	--如果没有，就插入一条
+	if not data then
+		trace("create user sign sql " .. id)
+		local sign = {userid=id, sign=""}
+		sqlinsert(tbl_usersign,sign)
+		return redisinsert(redis_usersign,sign.userid,sign)
+	end
+	return redis_adduserdata(data, data.userid, redis_usersign);
 end

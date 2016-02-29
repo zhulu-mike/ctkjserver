@@ -56,7 +56,8 @@ MSG[100].on = function(client,input)
 		heroupdate = 0,
 		chapterupdate = "",
 		prbupdate = 0,
-		storeupdate = 0
+		storeupdate = 0,
+		signupdate = 0
 	}
 	
 	local resversion = input.resversion
@@ -64,6 +65,7 @@ MSG[100].on = function(client,input)
 	local chaptersversion = input.chaptersversion
 	local prbversion = input.prbversion
 	local storeversion = input.storeversion
+	local signversion = input.signversion
 
 
 
@@ -77,6 +79,7 @@ MSG[100].on = function(client,input)
 	local needsendheros = false
 	local needsendstore = false
 	local needsendprogress = false
+	local needsendsign = false
 	if update or playerdata.detail.version > resversion then
 		needsenddetail = true
 	elseif (playerdata.detail.version < resversion) then
@@ -97,10 +100,15 @@ MSG[100].on = function(client,input)
 	elseif (playerdata.progress.version < prbversion) then
 		respdata.prbupdate = 1
 	end
+	if update or playerdata.sign.version > signversion then
+		needsendsign = true
+	elseif (playerdata.sign.version < signversion) then
+		respdata.signupdate = 1
+	end
 
 	local needsyncchapter = {}
 	local rounds = playerdata.rds.rounds
-	trace(json.encode(playerdata.rds))
+	-- trace(json.encode(playerdata.rds))
 	local rdsupdate = ""
 	if chaptersversion ~= "" then
 		local chaptersversions = string.split(chaptersversion, ";")
@@ -113,7 +121,7 @@ MSG[100].on = function(client,input)
 				table.insert(needsyncchapter, temp[1])
 			elseif rounds[temp[1]] == nil or tonumber(rounds[temp[1]].version) < tonumber(temp[2]) then
 				rdsupdate = rdsupdate .. temp[1] .. ","
-				trace(temp[1])
+				-- trace(temp[1])
 			end
 		end
 		if rdsupdate ~= "" then
@@ -151,6 +159,15 @@ MSG[100].on = function(client,input)
 			}
 		)
 	end
+	if needsendsign then
+		client:send(256,{
+			userid = playerdata.detail.userid,
+			sign = playerdata.sign.sign,
+			version = playerdata.sign.version,
+			opentime = playerdata.sign.opentime
+			}
+		)
+	end
 	
 	if needsendprogress then
 		local userphb = playerdata.progress
@@ -167,6 +184,7 @@ MSG[100].on = function(client,input)
 			roleLayerGuide = userphb.roleLayerGuide,
 			firstChapterGuide = userphb.firstChapterGuide,
 			isRemindRole = userphb.isRemindRole,
+			firstCharge = userphb.firstCharge,
 			version = userphb.version
 			}
 		)
@@ -176,7 +194,7 @@ MSG[100].on = function(client,input)
 		client:send(255,{
 			userid = playerdata.detail.userid,
 			chapter = v,
-			rds = json.encode(rounds[v].data),
+			rds = rounds[v].data,
 			version = rounds[v].version
 		})
 	end
@@ -275,6 +293,7 @@ MSG[115].on = function(client,input)
 	data.roleLayerGuide = input.roleLayerGuide
 	data.firstChapterGuide = input.firstChapterGuide
 	data.isRemindRole = input.isRemindRole
+	data.firstCharge = input.firstCharge
 	data.version = input.version
 	data.invalid = true
 	client:send(215,
@@ -307,6 +326,27 @@ MSG[118].on = function(client,input)
 	{
 		ret = EXCUTE_SUCCESS,
 		chapter = chapter
+	})
+end
+
+--同步sign签到数据
+MSG[121].on = function(client,input)
+
+	if input.version <= client.data.sign.version then
+		client:send(221,
+		{
+			ret = SYN_VERSIONERROR
+		})
+		return
+	end
+	local data = client.data.sign
+	data.sign = input.sign
+	data.opentime = input.opentime
+	data.version = input.version
+	data.invalid = true
+	client:send(221,
+	{
+		ret = EXCUTE_SUCCESS
 	})
 end
 

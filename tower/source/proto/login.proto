@@ -14,7 +14,8 @@ message auth
     optional int32  herosversion	= 6;		 //英雄版本
     optional string  chaptersversion	= 7;		 //章节版本,格式为：章节ID，版本号;章节ID，版本号
     optional int32  prbversion	= 8;		 //进度数据版本
-    optional int32  storeversion	= 9;		 //商店数据版本
+    optional int32  storeversion    = 9;         //商店数据版本
+    optional int32  signversion	= 10;		 //签到数据版本
 }
 
 message auth_resp
@@ -26,7 +27,8 @@ message auth_resp
     optional int32  heroupdate	= 5;		 //英雄数据同步控制，同上
     optional string  chapterupdate	= 6;		 //章节数据同步控制，同上，格式为：章节ID,章节ID,章节ID
     optional int32  prbupdate	= 7;		 //进度数据同步控制，同上
-    optional int32  storeupdate	= 8;		 //商店数据同步控制，同上
+    optional int32  storeupdate = 8;         //商店数据同步控制，同上
+    optional int32  signupdate	= 9;		 //签到数据同步控制，同上
 }
 
 //初始化完成通知102

@@ -106,6 +106,12 @@ function saveplayer(uid,data)
 		redisupdate(redis_userprogress,d.userid,d,REDIS_PLAYER_TTL)
 	end
 
+	d = data.sign
+	if d and d.version > d.lastversion then
+		redis_addsqlsavelist(d.userid)
+		redisupdate(redis_usersign,d.userid,d,REDIS_PLAYER_TTL)
+	end
+
 	return NONE
 end
 

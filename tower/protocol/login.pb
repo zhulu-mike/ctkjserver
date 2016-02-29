@@ -1,6 +1,6 @@
 
-›
-login.protologin"À
+Ä
+login.protologin"Õ
 auth
 bindaccount (	
 serverid (
@@ -13,7 +13,9 @@ resversion (
 chaptersversion (	
 
 prbversion (
-storeversion	 ("¡
+storeversion	 (
+signversion
+ ("µ
 	auth_resp
 error (
 userid (	
@@ -23,6 +25,8 @@ prbversion (
 heroupdate (
 chapterupdate (	
 	prbupdate (
-storeupdate ("
+storeupdate (
+
+signupdate	 ("
 init_complete
 error (

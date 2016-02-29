@@ -11,7 +11,8 @@ data{
 	rds:{},
 	timeinfo:{},
 	store:{},
-	progress:{}
+	progress:{},
+	sign:{}
 }
 ]]--
 
@@ -155,6 +156,10 @@ function cclient:builddata()
 		flag = true
 		playerdata.progress = data.progress
 	end
+	if data.sign.invalid then
+		flag = true
+		playerdata.sign = data.sign
+	end
 	if flag then
 		return playerdata
 	else
@@ -175,6 +180,9 @@ function cclient:resetdatastate( )
 	self.data.store.lastversion = self.data.store.version
 	self.data.progress.invalid = false
 	self.data.progress.lastversion = self.data.progress.version
+	self.data.sign.invalid = false
+	self.data.sign.lastversion = self.data.sign.version
+
 end
 --每天凌晨初始化数据
 function cclient:resetdayrecord(dayid)
